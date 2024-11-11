@@ -38,7 +38,7 @@ export default function SignUpScreen() {
             router.push("/profile_creation");
         } catch (error) {
             console.log(error);
-            Alert.alert("Registration Error", error.message);
+            Alert.alert("Registration Error", (error as Error).message);
         }
     };
 

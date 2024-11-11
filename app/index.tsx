@@ -11,7 +11,7 @@ export default function OnboardingScreen() {
         source={require('../assets/images/logo.png')}
         style={styles.logo}
       />
-      <Text style={styles.appName}>Meet ATU</Text>
+      <Text style={styles.appName}>Welcome!</Text>
       <Button title="Sign up with Tech e-mail" onPress={() => router.push('/signup')} />
       <Link href="/login" style={styles.loginButton}>
         <Text style={styles.loginText}>

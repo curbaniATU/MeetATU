@@ -1,39 +1,44 @@
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, TextInput, } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert } from 'react-native';
 
-import { auth, db } from "../config/firebase"
-import { createUserWithEmailAndPassword} from "firebase/auth";
-import { setDoc, doc} from "firebase/firestore"
-
+import { auth, db } from "../config/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
 
 export default function SignUpScreen() {
-
     const router = useRouter();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSignUp =async (e: { preventDefault: () => void; }) => {
+    const handleSignUp = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
+
+        if (password !== confirmPassword) {
+            Alert.alert("Password Mismatch", "Passwords do not match. Please try again.");
+            return;
+        }
+
         try {
-            await createUserWithEmailAndPassword(auth, email, password)
-            const user=auth.currentUser;
+            await createUserWithEmailAndPassword(auth, email, password);
+            const user = auth.currentUser;
             console.log(user);
-            if(user){
+            if (user) {
                 await setDoc(doc(db, "users", user.uid), {
                     email: user.email,
                     firstName: firstName,
                     lastName: lastName,
                 });
             }
-            console.log("User Registered Successfully!!!")
-            router.push("/profile_creation")
-        } 
-        catch (error) {
+            console.log("User Registered Successfully!");
+            router.push("/profile_creation");
+        } catch (error) {
             console.log(error);
+            Alert.alert("Registration Error", error.message);
         }
     };
 
@@ -42,30 +47,39 @@ export default function SignUpScreen() {
             <Text style={styles.welcome}>Sign up for Meet ATU</Text>
             <TextInput
                 style={styles.input}
-                onChangeText={(text) => setFirstName(text)}
+                onChangeText={setFirstName}
                 value={firstName}
                 placeholder="Enter your first name"
                 placeholderTextColor="#C5C5C5"
             />
             <TextInput
                 style={styles.input}
-                onChangeText={(text) => setLastName(text)}
+                onChangeText={setLastName}
                 value={lastName}
                 placeholder="Enter your last name"
                 placeholderTextColor="#C5C5C5"
             />
             <TextInput
                 style={styles.input}
-                onChangeText={(text) => setEmail(text)}
+                onChangeText={setEmail}
                 value={email}
                 placeholder="Enter your email"
                 placeholderTextColor="#C5C5C5"
+                keyboardType="email-address"
             />
             <TextInput
                 style={styles.input}
-                onChangeText={(text) => setPassword(text)}
+                onChangeText={setPassword}
                 value={password}
                 placeholder="Enter your password"
+                placeholderTextColor="#C5C5C5"
+                secureTextEntry
+            />
+            <TextInput
+                style={styles.input}
+                onChangeText={setConfirmPassword}
+                value={confirmPassword}
+                placeholder="Confirm your password"
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
@@ -75,9 +89,9 @@ export default function SignUpScreen() {
             </Link>
         </SafeAreaView>
     );
-    }
+}
 
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         margin: 10,
@@ -88,8 +102,10 @@ export default function SignUpScreen() {
         height: 40,
         borderColor: 'gray',
         borderWidth: 1,
-        paddingLeft: 4,
+        paddingLeft: 8,
         marginBottom: 10,
+        borderRadius: 5,
+        backgroundColor: '#f9f9f9',
     },
     welcome: {
         textAlign: 'center',

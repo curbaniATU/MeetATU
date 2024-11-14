@@ -1,11 +1,18 @@
 import React from 'react';
 import { SafeAreaView, Text, Button, Image, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient'; 
 
 export default function OnboardingScreen() {
   const router = useRouter()
-
+  
   return (
+    <LinearGradient
+      colors={['#EEC729', '#3EA325', 'black']} // Gradient colors
+      start={{ x: 1, y: 0 }} // Starting from top-right
+      end={{ x: 0, y: 0.5 }} // Ending at middle-left
+      style={styles.container} // Apply gradient to the container
+    >
     <SafeAreaView style={styles.container}>
       <Image
         source={require('../assets/images/logo.png')}
@@ -20,13 +27,13 @@ export default function OnboardingScreen() {
       </Link>
 
     </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
     justifyContent: 'center',
     padding: 8,
   },

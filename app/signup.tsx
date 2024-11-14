@@ -49,21 +49,21 @@ export default function SignUpScreen() {
                 style={styles.input}
                 onChangeText={setFirstName}
                 value={firstName}
-                placeholder="Enter your first name"
+                placeholder="Enter first name"
                 placeholderTextColor="#C5C5C5"
             />
             <TextInput
                 style={styles.input}
                 onChangeText={setLastName}
                 value={lastName}
-                placeholder="Enter your last name"
+                placeholder="Enter last name"
                 placeholderTextColor="#C5C5C5"
             />
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
                 value={email}
-                placeholder="Enter your email"
+                placeholder="Enter email"
                 placeholderTextColor="#C5C5C5"
                 keyboardType="email-address"
             />
@@ -71,7 +71,7 @@ export default function SignUpScreen() {
                 style={styles.input}
                 onChangeText={setPassword}
                 value={password}
-                placeholder="Enter your password"
+                placeholder="Enter password"
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
@@ -79,11 +79,11 @@ export default function SignUpScreen() {
                 style={styles.input}
                 onChangeText={setConfirmPassword}
                 value={confirmPassword}
-                placeholder="Confirm your password"
+                placeholder="Confirm password"
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
-            <Button title="Register" onPress={handleSignUp} />
+            <Button title="Register" onPress={handleSignUp} color="#24786D"/>
             <Link href="/login" style={styles.switchText}>
                 <Text style={styles.switchText}>Already have an account? Log in</Text>
             </Link>
@@ -100,22 +100,21 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
+        borderBottomWidth:1,
+        borderBottomColor: 'C5C5C5',
         paddingLeft: 8,
         marginBottom: 10,
-        borderRadius: 5,
         backgroundColor: '#f9f9f9',
     },
     welcome: {
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 25,
-        marginBottom: 20,
+        marginBottom: 50,
     },
     switchText: {
         textAlign: 'center',
-        color: 'blue',
+        color: 'black',
         marginTop: 15,
     },
 });

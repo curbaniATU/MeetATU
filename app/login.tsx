@@ -26,6 +26,7 @@ export default function LoginScreen() {
     return (      
         <SafeAreaView style={styles.container}>
             <Text style={styles.welcome}>Log in to Meet ATU</Text>
+            <Text style={styles.appName}>Welcome Back!</Text>
             <TextInput
                 style={styles.input}
                 onChangeText={setEmail}
@@ -42,7 +43,7 @@ export default function LoginScreen() {
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
-            <Button title="Continue" onPress={handleLogin} />
+            <Button title="Continue" onPress={handleLogin} color="#24786D" />
             <Link href="/signup" style={styles.switchText}>
                 <Text style={styles.switchText}>Don't have an account? Sign up</Text>
             </Link>
@@ -59,11 +60,10 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
+        borderBottomWidth:1,
+        borderBottomColor: 'C5C5C5',
         paddingLeft: 8,
         marginBottom: 10,
-        borderRadius: 5,
         backgroundColor: '#f9f9f9',
     },
     welcome: {
@@ -74,7 +74,15 @@ const styles = StyleSheet.create({
     },
     switchText: {
         textAlign: 'center',
-        color: 'blue',
+        color: 'black',
         marginTop: 15,
     },
+    appName: {
+        fontSize: 15,
+        textAlign: 'center',
+        marginBottom: 100,
+        color:'grey',
+
+      },
+    
 });

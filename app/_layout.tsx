@@ -76,8 +76,6 @@ export default function RootLayout() {
 }
 */
 
-
-// src/_layout.tsx
 import { router, Stack } from "expo-router";
 import React from "react";
 //import { Button } from "react-native";
@@ -92,11 +90,11 @@ export default function RootLayout() {
       />
       <Stack.Screen 
         name="login" 
-        options={{ title: "Login", headerShown: true  }}
+        options={{ title: "Login", headerShown: false  }}
       />
       <Stack.Screen 
         name="signup" 
-        options={{ title: "Sign Up", headerShown: true  }}
+        options={{ title: "Sign Up", headerShown: false  }}
       />
       <Stack.Screen 
         name="profile_creation" 
@@ -117,7 +115,7 @@ export default function RootLayout() {
       />
       <Stack.Screen 
         name="home" 
-        options={{ title: "Home" }}
+        options={{ title: "Home", headerShown: false }}
       />
     </Stack>
   );

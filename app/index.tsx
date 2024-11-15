@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 5,
+    color: 'gold',
   },
   logo: {
     width: 250,
@@ -56,5 +57,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     fontWeight: 'bold',
+    color: 'green',
+    paddingTop: 13,
   },
 });

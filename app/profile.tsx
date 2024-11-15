@@ -64,11 +64,11 @@ export default function Profile() {
 
             {/* Custom Button to Go to Home */}
             <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
-                <Text style={styles.buttonText}>Go to homepage</Text>
+                <Text style={styles.buttonText1}>Go to homepage</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-                <Text style={styles.buttonText}>Logout</Text>
+            <TouchableOpacity style={[styles.button]} onPress={handleLogout}>
+                <Text style={styles.buttonText2}>Logout</Text>
             </TouchableOpacity>
         </View>
     );
@@ -122,11 +122,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 20,
     },
-    logoutButton: {
-        backgroundColor: "#f54242",
+    buttonText1: {
+        color: "#007bff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
-    buttonText: {
-        color: "#fff",
+    buttonText2: {
+        color: "#f54242",
         fontSize: 16,
         fontWeight: "bold",
     },

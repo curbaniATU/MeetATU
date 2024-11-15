@@ -214,10 +214,11 @@ export default function SignUpScreen() {
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
-            <Button title="Register" onPress={handleSignUp} />
-            <Link href="/login" style={styles.switchText}>
+            <Button title= "Register" onPress={handleSignUp} />
+            <Link href= "/login" style={styles.switchText}>
                 <Text style={styles.switchText}>Already have an account? Log in</Text>
             </Link>
+            
         </SafeAreaView>
     );
 }

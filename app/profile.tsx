@@ -1,11 +1,14 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../config/firebase";
-import { getDoc, doc } from "firebase/firestore";
-import { View, Text, Button, Image, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { auth, db, storage } from "../config/firebase";
+import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import * as ImagePicker from 'expo-image-picker';
+import { View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
 
 export default function Profile() {
     const [userDetails, setUserDetails] = useState<any | null>(null);
+    const [uploading, setUploading] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -28,15 +31,76 @@ export default function Profile() {
         fetchUserDetails();
     }, []);
 
-    async function handleLogout() {
-        try {
-            await auth.signOut();
-            router.replace("/login"); // Navigate to login screen
-            console.log("Sign Out Successful");
-        } catch (error) {
-            console.log(error);
+    const requestPermissions = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert("Permission Required", "We need access to your photos to upload profile pictures.");
+            return false;
         }
-    }
+        return true;
+    };
+
+    const pickImage = async () => {
+        const hasPermission = await requestPermissions();
+        if (!hasPermission) return;
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,  // Fixed deprecated option
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.5,  // Reduce image size for optimization
+        });
+
+        if (!result.canceled && result.assets?.length > 0) {
+            uploadImage(result.assets[0].uri);
+        } else {
+            Alert.alert("Error", "No image selected.");
+        }
+    };
+
+    const uploadImage = async (uri: string) => {
+        try {
+            setUploading(true);
+
+            if (!uri) {
+                throw new Error("Invalid image. Please select a valid image.");
+            }
+
+            const response = await fetch(uri);
+            const blob = await response.blob();
+
+            // Ensure proper image metadata
+            const metadata = {
+                contentType: "image/jpeg",
+            };
+
+            const user = auth.currentUser;
+            if (!user) {
+                throw new Error("User not authenticated. Please log in again.");
+            }
+
+            const storageRef = ref(storage, `profile_pictures/${user.uid}.jpg`);
+            await uploadBytes(storageRef, blob, metadata);
+
+            const downloadURL = await getDownloadURL(storageRef);
+            await updateDoc(doc(db, "users", user.uid), {
+                profileImageUrl: downloadURL,
+            });
+
+            setUserDetails((prevDetails: any) => ({
+                ...prevDetails,
+                profileImageUrl: downloadURL,
+            }));
+
+            Alert.alert("Success", "Profile picture updated successfully!");
+        } catch (error) {
+            console.error("Upload error:", error);
+            const errorMessage = (error instanceof Error) ? error.message : "Could not upload image. Please try again.";
+            Alert.alert("Error", errorMessage);        
+        } finally {
+            setUploading(false);
+        }
+    };
 
     if (!userDetails) {
         return <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />;
@@ -45,12 +109,12 @@ export default function Profile() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Image
-                    source={{ uri: userDetails.profileImageUrl || /*"https://via.placeholder.com/150"*/ 
-                        "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/85b89f00-a0da-4d78-9db2-41fb7a4d9357/d2xm6bb-b9280965-9bce-4bd6-a555-ef4e91adf2d1.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzg1Yjg5ZjAwLWEwZGEtNGQ3OC05ZGIyLTQxZmI3YTRkOTM1N1wvZDJ4bTZiYi1iOTI4MDk2NS05YmNlLTRiZDYtYTU1NS1lZjRlOTFhZGYyZDEuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.k8HcQbi78lMgnp1Lbgj2BCLwvUrHphrhWpiPc8FVWa8"
-                    }}
-                    style={styles.profileImage}
-                />
+                <TouchableOpacity onPress={pickImage}>
+                    <Image
+                        source={{ uri: userDetails.profileImageUrl || "https://via.placeholder.com/150" }}
+                        style={styles.profileImage}
+                    />
+                </TouchableOpacity>
                 <Text style={styles.nameText}>{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
             </View>
             <View style={styles.detailsContainer}>
@@ -62,12 +126,16 @@ export default function Profile() {
                 <Text style={styles.text}>{userDetails.classification}</Text>
             </View>
 
-            {/* Custom Button to Go to Home */}
+            {uploading && <ActivityIndicator size="large" color="#007bff" />}
+
             <TouchableOpacity style={styles.button} onPress={() => router.push("/home")}>
                 <Text style={styles.buttonText1}>Go to homepage</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button]} onPress={handleLogout}>
+            <TouchableOpacity style={styles.button} onPress={async () => {
+                await auth.signOut();
+                router.replace("/login");
+            }}>
                 <Text style={styles.buttonText2}>Logout</Text>
             </TouchableOpacity>
         </View>
@@ -78,7 +146,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        paddingTop: 100, // Add padding at the top to shift content down
+        paddingTop: 150,  // Increased top padding to shift content down
         backgroundColor: "#f5f5f5",
     },
     loading: {

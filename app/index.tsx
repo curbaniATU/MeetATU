@@ -11,27 +11,20 @@ export default function OnboardingScreen() {
     <LinearGradient
       colors={['#EEC729', '#3EA325', 'black']} // Gradient colors
       start={{ x: 1, y: 0 }} // Starting from top-right
-      end={{ x: 0, y: 0.5 }} // Ending at middle-left
+      end={{ x: -0.55, y: 0.5 }} // Ending at middle-left
       style={styles.container} // Apply gradient to the container
     >
-    <LinearGradient
-      colors={['#EEC729', '#3EA325', 'black']} // Gradient colors
-      start={{ x: 1, y: 0 }} // Starting from top-right
-      end={{ x: 0, y: 0.5 }} // Ending at middle-left
-      style={styles.container} // Apply gradient to the container
-    >
-    <SafeAreaView style={styles.container}>
-      <Image
+   
+      <SafeAreaView style={styles.container}>
+        <Image
         source={require('../assets/images/logo.png')}
-        style={styles.logo}
-      />
-      
+        style={styles.logo}/>
      
-      <TouchableOpacity
+        <TouchableOpacity
           style={styles.blackButton}
-          onPress={() => router.push('/signup')}
-        >
-          <Text style={styles.blackButtonText}>Sign up with Tech e-mail</Text>
+          onPress={() => router.push('/signup')}>
+
+            <Text style={styles.blackButtonText}>Sign up with Tech e-mail</Text>
         </TouchableOpacity>
 
         <Link href="/login" style={styles.loginButton}>
@@ -40,8 +33,7 @@ export default function OnboardingScreen() {
           </Text>
         </Link>
 
-    </SafeAreaView>
-    </LinearGradient>
+      </SafeAreaView>
     </LinearGradient>
   );
 }
@@ -54,10 +46,11 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    width: 250,
-    height: 250,
+    width: 350,
+    height: 350,
     alignSelf: 'center',
-    marginBottom: 60,
+    resizeMode: 'contain', 
+    marginBottom: 100,
   },
   loginText: {
     fontSize: 14,
@@ -76,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black', 
     paddingVertical: 12,
     paddingHorizontal: 40,
-    borderRadius: 10, // Remember this is for rounded corners
+    borderRadius: 10,
     marginBottom: 20, 
   },
   blackButtonText: {

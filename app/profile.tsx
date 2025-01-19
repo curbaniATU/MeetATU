@@ -174,7 +174,7 @@ export default function Profile() {
                     <Text style={styles.text}>{major}</Text>
                 )}
                 
-                <Text style={styles.label}>Classification:</Text>
+                <Text style={styles.label}>Graduation Year:</Text>
                 {isEditing ? (
                     <TextInput 
                         style={styles.input}

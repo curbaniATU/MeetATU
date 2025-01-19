@@ -1,125 +1,3 @@
-/*import { Link, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert } from 'react-native';
-
-import { auth, db } from "../config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-
-export default function SignUpScreen() {
-    const router = useRouter();
-
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-
-    const handleSignUp = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-
-        if (password !== confirmPassword) {
-            Alert.alert("Password Mismatch", "Passwords do not match. Please try again.");
-            return;
-        }
-
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            const user = auth.currentUser;
-            console.log(user);
-            if (user) {
-                await setDoc(doc(db, "users", user.uid), {
-                    email: user.email,
-                    firstName: firstName,
-                    lastName: lastName,
-                });
-            }
-            console.log("User Registered Successfully!");
-            router.push("/profile_creation");
-        } catch (error) {
-            console.log(error);
-            Alert.alert("Registration Error", (error as Error).message);
-        }
-    };
-
-    return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.welcome}>Sign up for Meet ATU</Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={setFirstName}
-                value={firstName}
-                placeholder="Enter first name"
-                placeholderTextColor="#C5C5C5"
-            />
-            <TextInput
-                style={styles.input}
-                onChangeText={setLastName}
-                value={lastName}
-                placeholder="Enter last name"
-                placeholderTextColor="#C5C5C5"
-            />
-            <TextInput
-                style={styles.input}
-                onChangeText={setEmail}
-                value={email}
-                placeholder="Enter email"
-                placeholderTextColor="#C5C5C5"
-                keyboardType="email-address"
-            />
-            <TextInput
-                style={styles.input}
-                onChangeText={setPassword}
-                value={password}
-                placeholder="Enter password"
-                placeholderTextColor="#C5C5C5"
-                secureTextEntry
-            />
-            <TextInput
-                style={styles.input}
-                onChangeText={setConfirmPassword}
-                value={confirmPassword}
-                placeholder="Confirm password"
-                placeholderTextColor="#C5C5C5"
-                secureTextEntry
-            />
-            <Button title="Register" onPress={handleSignUp} color="#24786D"/>
-            <Link href="/login" style={styles.switchText}>
-                <Text style={styles.switchText}>Already have an account? Log in</Text>
-            </Link>
-        </SafeAreaView>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        margin: 10,
-        justifyContent: 'center',
-        padding: 8,
-    },
-    input: {
-        height: 40,
-        borderBottomWidth:1,
-        borderBottomColor: 'C5C5C5',
-        paddingLeft: 8,
-        marginBottom: 10,
-        backgroundColor: '#f9f9f9',
-    },
-    welcome: {
-        textAlign: 'center',
-        fontWeight: 'bold',
-        fontSize: 25,
-        marginBottom: 50,
-    },
-    switchText: {
-        textAlign: 'center',
-        color: 'black',
-        marginTop: 15,
-    },
-});*/
-
-
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert } from 'react-native';
@@ -145,7 +23,7 @@ export default function SignUpScreen() {
 
         // Check if email matches the approved domain
         if (!email.endsWith(approvedDomain)) {
-            Alert.alert("Invalid Email", `Please use an email address with an approved domain.`);
+            Alert.alert("Invalid Email", `Please use an email address with the approved domain.`);
             return;
         }
 
@@ -175,7 +53,9 @@ export default function SignUpScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.welcome}>Sign up for Meet ATU</Text>
+            <Text style={styles.welcome}>Sign up to Meet ATU</Text>
+            <Text style={styles.appName}>Join our community today!</Text>
+
             <TextInput
                 style={styles.input}
                 onChangeText={setFirstName}
@@ -214,11 +94,10 @@ export default function SignUpScreen() {
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
-            <Button title= "Register" onPress={handleSignUp} />
-            <Link href= "/login" style={styles.switchText}>
+            <Button title="Register" onPress={handleSignUp} color="#24786D" />
+            <Link href="/login" style={styles.switchText}>
                 <Text style={styles.switchText}>Already have an account? Log in</Text>
             </Link>
-            
         </SafeAreaView>
     );
 }
@@ -232,11 +111,10 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
+        borderBottomWidth: 1,
+        borderBottomColor: '#C5C5C5',
         paddingLeft: 8,
         marginBottom: 10,
-        borderRadius: 5,
         backgroundColor: '#f9f9f9',
     },
     welcome: {
@@ -247,7 +125,13 @@ const styles = StyleSheet.create({
     },
     switchText: {
         textAlign: 'center',
-        color: 'blue',
+        color: 'black',
         marginTop: 15,
+    },
+    appName: {
+        fontSize: 15,
+        textAlign: 'center',
+        marginBottom: 100,
+        color: 'grey',
     },
 });

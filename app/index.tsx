@@ -9,7 +9,7 @@ export default function OnboardingScreen() {
   
   return (
     <LinearGradient
-      colors={['#EEC729', '#3EA325', 'black']} // Gradient colors
+      colors={['#24786D', '#3EA325', 'black']} // Gradient colors
       start={{ x: 1, y: 0 }} // Starting from top-right
       end={{ x: -0.55, y: 0.5 }} // Ending at middle-left
       style={styles.container} // Apply gradient to the container

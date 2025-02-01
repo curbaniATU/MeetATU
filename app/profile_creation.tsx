@@ -77,11 +77,11 @@ export default function ProfileCreationScreen() {
             style={styles.input}
             onChangeText={text => setClassification(text)}
             value={classification}
-            placeholder="Classification"
+            placeholder="Graduation Year"
             placeholderTextColor="#C5C5C5"
         />
 
-        <Button title="Complete Profile" onPress={handleProfileCompletion} />
+        <Button title="Complete Profile" onPress={handleProfileCompletion} color="#24786D" />
 
         {message && <Text style={styles.message}>{message}</Text>}
         </SafeAreaView>
@@ -102,15 +102,16 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
+        borderBottomWidth: 1,
+        borderBottomColor: '#C5C5C5',
         paddingLeft: 8,
-        marginBottom: 20,
+        marginBottom: 10,
+        backgroundColor: '#f9f9f9',
     },
     message: {
         textAlign: 'center',
         marginTop: 20,
         fontSize: 16,
-        color: 'green',
+        color: 'black',
     },
 });

@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../config/firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
-import { View, Text, TextInput, Image, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Modal, FlatList } from "react-native";
+import { View, Text, TextInput, Image, StyleSheet, ActivityIndicator, TouchableOpacity, Alert, Modal, FlatList, Button} from "react-native";
 
 // Define avatar options with filenames for matching
 const avatarOptions = [
@@ -135,7 +135,7 @@ export default function Profile() {
                     />
                     <Image
                         source={require('../assets/images/edit.png')}
-                        style={styles.editIcon}
+                       style={styles.editIcon}
                     />
                 </TouchableOpacity>
                 <Text style={styles.avatarEditText}>Tap to change avatar</Text>
@@ -216,7 +216,7 @@ export default function Profile() {
                 await auth.signOut();
                 router.replace("/login");
             }}>
-                <Text style={styles.buttonText2}>Logout</Text>
+               <Button title="Logout" color="#24786D" />
             </TouchableOpacity>
         </View>
     );
@@ -232,12 +232,12 @@ const styles = StyleSheet.create({
     label: { fontSize: 16, fontWeight: "bold", color: "#333" },
     text: { fontSize: 16, color: "#555", marginBottom: 10 },
     input: { fontSize: 16, color: "#333", marginBottom: 10, borderBottomWidth: 1, borderBottomColor: "#ccc", padding: 5 },
-    button: { padding: 12, borderRadius: 8, alignItems: "center", marginTop: 20 },
+    button: { padding: 12, borderRadius: 8, alignItems: "center", marginTop: 20, color:'#24786D'},
     buttonText1: { color: "#007bff", fontSize: 16, fontWeight: "bold" },
     buttonText2: { color: "#f54242", fontSize: 16, fontWeight: "bold" },
     modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.9)' },
-    avatarOption: { width: 80, height: 80, margin: 10, borderRadius: 40, borderWidth: 2, borderColor: '#fff' },
-    avatarContainer: { alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom: 20 },
-    avatarEditText: { color: '#ccc', fontSize: 14, marginTop: 5 },
-    editIcon: { position: 'absolute', bottom: 10, right: 10, width: 24, height: 24 },
+    avatarOption: { width: 100, height: 100, margin: 10, borderRadius: 40, borderWidth: 2, borderColor: '#fff' },
+    avatarContainer: { alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom: 10 },
+    avatarEditText: { color: '#ccc', fontSize: 14, marginBottom:20},
+    editIcon: { position: 'absolute', bottom: 10, right: 10, width: 24, height: 24},
 });

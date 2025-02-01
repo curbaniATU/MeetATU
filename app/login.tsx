@@ -16,7 +16,7 @@ export default function LoginScreen() {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             console.log("User logged in successfully");
-            router.replace("/profile"); // Use replace to avoid showing a back button
+            router.replace("/home"); // Use replace to avoid showing a back button
         } catch (error) {
             console.error("Login failed:", error);
             Alert.alert("Login Error", "Invalid email or password. Please try again.");

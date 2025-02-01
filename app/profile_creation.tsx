@@ -35,7 +35,7 @@ export default function ProfileCreationScreen() {
             }  
             
             setMessage('Profile created successfully');
-            router.push("/profile")
+            router.push("/home")
             
         }
         }

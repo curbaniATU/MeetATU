@@ -98,7 +98,7 @@ export default function RootLayout() {
       />
       <Stack.Screen 
         name="profile_creation" 
-        options={{ title: "Create Profile" }}
+        options={{ title: "Create Profile", headerShown: false }}
       />
       <Stack.Screen 
         name="profile" 

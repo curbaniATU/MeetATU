@@ -1,7 +1,6 @@
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert } from 'react-native';
-
 import { auth, db } from "../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
@@ -105,15 +104,16 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 10,
         justifyContent: 'center',
-        padding: 8,
+        backgroundColor: '#E3E4E4',
     },
     input: {
         height: 40,
         borderBottomWidth: 1,
         borderBottomColor: '#C5C5C5',
-        paddingLeft: 8,
+        paddingLeft: 16,
+        marginLeft: 10,
+        marginRight: 10,
         marginBottom: 10,
         backgroundColor: '#f9f9f9',
     },

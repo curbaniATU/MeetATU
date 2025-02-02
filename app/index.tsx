@@ -9,9 +9,9 @@ export default function OnboardingScreen() {
   
   return (
     <LinearGradient
-      colors={['#EEC729', '#3EA325', 'black']} // Gradient colors
-      start={{ x: 1, y: 0 }} // Starting from top-right
-      end={{ x: -0.55, y: 0.5 }} // Ending at middle-left
+      colors={['#e1c13f', '#266616', 'black']} // Gradient colors
+      start={{ x: 1.55, y: .75 }} // Starting from top-right
+      end={{ x: -0.55, y: .5 }} // Ending at middle-left
       style={styles.container} // Apply gradient to the container
     >
    

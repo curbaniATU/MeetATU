@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#E3E4E4',
         padding: 20,
         paddingTop: Platform.OS === 'ios' ? StatusBar.currentHeight || 50 : 20,
     },

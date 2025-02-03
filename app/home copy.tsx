@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         textAlign: 'center',
-        marginBottom: 200, // Space below title to separate from buttons
+        marginBottom: 150, // Space below title to separate from buttons
     },
     block: {
         width: '90%',

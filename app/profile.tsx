@@ -247,13 +247,13 @@ export default function Profile() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 150, backgroundColor: "#f5f5f5" },
+  container: { flex: 1, padding: 20, paddingTop: 100, backgroundColor: "#f5f5f5" },
   loading: { flex: 1, justifyContent: "center" },
-  header: { alignItems: "center", marginBottom: 20 },
+  header: { alignItems: "center" },
   nameText: { fontSize: 24, fontWeight: "bold", color: "#333", marginBottom: 20 },
   avatarSection: { alignItems: 'center' },
-  profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 5 },
-  avatarEditText: { color: '#ccc', fontSize: 14, marginBottom: 10 },
+  profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 4 },
+  avatarEditText: { color: '#ccc', fontSize: 14, marginBottom: 0 },
   detailsContainer: { marginVertical: 20, backgroundColor: "#fff", padding: 15, borderRadius: 8 },
   label: { fontSize: 16, fontWeight: "bold", color: "#333" },
   text: { fontSize: 16, color: "#555", marginBottom: 10 },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   avatarContainer: { alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom: 0 },
   editIcon: { position: 'absolute', bottom: 10, right: 10, width: 24, height: 24 },
   // Button styles
-  buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+  buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
   buttonText1: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   buttonText2: { color: "#fff", fontSize: 16, fontWeight: "bold" },
   sideButton: { backgroundColor: '#24786D', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, flex: 1, alignItems: 'center', marginHorizontal: 5 },

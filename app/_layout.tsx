@@ -132,6 +132,14 @@ export default function RootLayout() {
         options={{ title: "Create Profile", headerShown: false }}
       />
       <Stack.Screen 
+        name="leaderboard" 
+        options={{ title: "Leaderboard", headerShown: false }}
+      />
+      <Stack.Screen 
+        name="events" 
+        options={{ title: "Events", headerShown: false }}
+      />
+      <Stack.Screen 
         name="profile" 
         options={{
           title: "Profile", headerShown: false}}

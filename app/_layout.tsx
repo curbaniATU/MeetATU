@@ -109,6 +109,10 @@ export default function RootLayout() {
         options={{ title: "Events", headerShown: false }}
       />
       <Stack.Screen 
+        name="messages" 
+        options={{ title: "Messages", headerShown: false }}
+      />
+      <Stack.Screen 
         name="profile" 
         options={{
           title: "Profile", headerShown: false}}

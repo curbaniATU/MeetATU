@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   createButton: {
     backgroundColor: '#28a745',
     paddingVertical: 15,
-    borderRadius: 8,
+    borderRadius: 20,
     alignItems: 'center',
     marginVertical: 20,
     marginLeft: 20,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: '#24786D',
     paddingVertical: 15,
-    borderRadius: 8,
+    borderRadius: 20,
     alignItems: 'center',
     marginLeft: 20,
     marginRight: 20,

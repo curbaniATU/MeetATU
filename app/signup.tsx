@@ -1,6 +1,6 @@
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert, TouchableOpacity  } from 'react-native';
 import { auth, db } from "../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
@@ -93,7 +93,12 @@ export default function SignUpScreen() {
                 placeholderTextColor="#C5C5C5"
                 secureTextEntry
             />
-            <Button title="Register" onPress={handleSignUp} color="#24786D" />
+
+            <TouchableOpacity style={styles.registerButton} onPress={handleSignUp}>
+                <Text style={styles.registerButtonText}>Register</Text>
+            </TouchableOpacity>
+
+            {/*<Button title="Register" onPress={handleSignUp} color="#24786D" />*/}
             <Link href="/login" style={styles.switchText}>
                 <Text style={styles.switchText}>Already have an account? Log in</Text>
             </Link>
@@ -134,4 +139,16 @@ const styles = StyleSheet.create({
         marginBottom: 100,
         color: 'grey',
     },
+    registerButton: {
+        backgroundColor: '#24786D',
+        paddingVertical: 10,
+        borderRadius: 20,
+        alignItems: 'center',
+        marginHorizontal: 15,
+      },
+      registerButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+      },
 });

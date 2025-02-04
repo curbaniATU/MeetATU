@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 100, backgroundColor: "#f5f5f5" },
   loading: { flex: 1, justifyContent: "center" },
   header: { alignItems: "center" },
-  nameText: { fontSize: 24, fontWeight: "bold", color: "#333", marginBottom: 20 },
+  nameText: { fontSize: 24, fontWeight: "bold", color: "#333", marginBottom: 5 },
   avatarSection: { alignItems: 'center' },
   profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 4 },
   avatarEditText: { color: '#ccc', fontSize: 14, marginBottom: 0 },

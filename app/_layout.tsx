@@ -76,11 +76,42 @@ export default function RootLayout() {
 }
 */
 
-import { router, Stack } from "expo-router";
-import React from "react";
+import { auth } from "@/comp/firebase";
+import { useUserStore } from "@/comp/userStore"
+import { router, Stack, useRootNavigationState } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 //import { Button } from "react-native";
 
 export default function RootLayout() {
+  const { currentUser, fetchUserInfo } = useUserStore();
+  const [loading, setLoading] = useState(true);
+  const navState = useRootNavigationState();
+  
+  useEffect(() => {
+    const unSub = onAuthStateChanged(auth, (user) => {
+      fetchUserInfo(user?.uid);
+
+      setLoading(false);
+
+      if (navState?.key) {
+        setTimeout(() => {
+          if(user){
+            router.replace("/home");
+          }
+        }, 100);
+        
+      }
+        
+    });
+
+    return () => {
+      unSub();
+    }
+  }, [fetchUserInfo, navState?.key]);
+
+  if (loading) return null;
+
   return (
     <Stack>
 

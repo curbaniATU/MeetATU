@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../config/firebase";
+import { auth, db } from "../comp/firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import {
   View,

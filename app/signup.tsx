@@ -4,9 +4,11 @@ import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert, TouchableOpac
 import { auth, db } from "../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
+import { useUserStore } from '@/comp/userStore';
 
 export default function SignUpScreen() {
     const router = useRouter();
+    const [currentUser] = useUserStore();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -37,10 +39,17 @@ export default function SignUpScreen() {
             console.log(user);
             if (user) {
                 await setDoc(doc(db, "users", user.uid), {
+                    id: user.uid,
                     email: user.email,
                     firstName: firstName,
                     lastName: lastName,
+                    profileAvatar: "black.png",
+                    points: 0,
                 });
+
+                await setDoc(doc(db, "chats", user.uid), {
+                    chats: [],
+                })
             }
             console.log("User Registered Successfully!");
             router.push("/profile_creation");

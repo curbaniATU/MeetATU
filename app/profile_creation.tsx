@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, SafeAreaView, TextInput, Button, StyleSheet } from 'react-native';
 import { Link, useRouter } from "expo-router";
-import { auth, db } from "../config/firebase";
+import { auth, db } from "../comp/firebase";
 import { setDoc, doc } from "firebase/firestore";
 
 // Remove the header for this screen

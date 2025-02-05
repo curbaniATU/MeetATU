@@ -1,7 +1,7 @@
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert } from 'react-native';
-import { auth, db } from "../config/firebase";
+import { Button, SafeAreaView, StyleSheet, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { auth, db } from "../comp/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 

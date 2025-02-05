@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, Button, StyleSheet, FlatList, View, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // Add LinearGradient for the gradient effect
-import { db } from "../config/firebase"; // Ensure correct Firebase import
+import { db } from "../comp/firebase"; // Ensure correct Firebase import
 import { collection, query, where, orderBy, getDocs, updateDoc, doc } from "firebase/firestore";
 
 // Define player interface

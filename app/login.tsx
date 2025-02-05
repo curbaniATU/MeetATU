@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { SafeAreaView, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../config/firebase";
+import { auth } from "../comp/firebase";
 
 export default function LoginScreen() {
     const router = useRouter();

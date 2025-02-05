@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {SafeAreaView, Text, StyleSheet, TextInput, FlatList, View, TouchableOpacity, Alert, Platform, StatusBar,} from 'react-native';
 import { useRouter } from 'expo-router';
 import {collection, addDoc, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../comp/firebase';
 
 // Define a simple User interface (adjust based on your Firestore structure)
 interface User { id: string; name: string; email?: string; }

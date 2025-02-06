@@ -61,7 +61,7 @@ export default function ChatList() {
             {chats.map((chat) => {
                 console.log(avatar[chat.user.id]);
                 return (
-                    <TouchableOpacity style={styles.chatItem} key={chat.chatId}>
+                    <TouchableOpacity style={styles.chatItem} key={chat.chatId} onPress={() => router.push("/chat")}>
                         <View>
                             {avatar[chat.user.id] ? (
                                 <Image source={avatar[chat.user.id]} style={styles.avatar} />

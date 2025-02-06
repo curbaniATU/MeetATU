@@ -17,7 +17,7 @@ export default function Home() {
             <View style={styles.widgetContainer}>
                 {/*row 1*/}
                 <View style={styles.row}>
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/messages")}>
+                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/chat_list")}>
                         <Ionicons name="chatbubbles-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Messages</Text>
                     </TouchableOpacity>

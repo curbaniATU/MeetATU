@@ -140,8 +140,8 @@ export default function RootLayout() {
         options={{ title: "Events", headerShown: false }}
       />
       <Stack.Screen 
-        name="messages" 
-        options={{ title: "Messages", headerShown: false }}
+        name="chat_list" 
+        options={{ title: "Chat List", headerShown: false }}
       />
       <Stack.Screen 
         name="profile" 

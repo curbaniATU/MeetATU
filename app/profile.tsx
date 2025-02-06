@@ -116,13 +116,13 @@ export default function Profile() {
       if (user) {
         const docRef = doc(db, "users", user.uid);
         await updateDoc(docRef, {
-          profileAvatar: `assets/Avatars/${avatar.filename}` // Save properly formatted path
+          profileAvatar: `${avatar.filename}` // Save properly formatted path
         });
 
         // Explicitly define the type of prevDetails to avoid TypeScript error
         setUserDetails((prevDetails: typeof userDetails) => ({
           ...(prevDetails as any),
-          profileAvatar: `assets/Avatars/${avatar.filename}`,
+          profileAvatar: `${avatar.filename}`,
         }));
 
         Alert.alert("Success", "Avatar updated successfully!");

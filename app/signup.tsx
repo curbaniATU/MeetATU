@@ -8,7 +8,6 @@ import { useUserStore } from '@/comp/userStore';
 
 export default function SignUpScreen() {
     const router = useRouter();
-    const [currentUser] = useUserStore();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

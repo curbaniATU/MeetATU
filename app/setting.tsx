@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'; 
 import React, { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+{/*import AsyncStorage from '@react-native-async-storage/async-storage';*/}
 import {
     SafeAreaView,
     Text,
@@ -116,6 +116,10 @@ export default function SettingsScreen() {
             <TouchableOpacity style={styles.settingItem} onPress={toggleNotifications}>
                 <Text style={[styles.settingText, darkMode && styles.darkText]}>Enable Notifications</Text>
                 <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.settingItem} onPress={() => router.push("/crn")}> 
+                <Text style={[styles.settingText, darkMode && styles.darkText]}>Add Classes</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.settingItem} onPress={() => router.push('/report')}> 

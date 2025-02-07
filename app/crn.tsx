@@ -6,59 +6,95 @@ import {
   FlatList, StyleSheet, View
 } from "react-native";
 import { useRouter } from "expo-router";
+import { db, auth } from "../comp/firebase"; // Ensure correct Firebase instance
+import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 
 interface ClassItem {
-  name: string;
   code: string;
+  title: string;
 }
-
-const API_URL = "http://your-server-ip:3000/classes"; // Replace with actual API
 
 export default function RegisterClassesPage() {
   const [classCode, setClassCode] = useState("");
-  const [className, setClassName] = useState("");
   const [registeredClasses, setRegisteredClasses] = useState<ClassItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        setRegisteredClasses(data);
-      })
-      .catch((err) => {
-        console.log("Error fetching classes:", err);
-      })
-      .finally(() => setIsLoading(false));
+    setIsLoading(false);
   }, []);
 
   const handleAddClass = async () => {
-    if (classCode.trim() === "" || className.trim() === "") {
-      Alert.alert("Error", "Please enter both code and name.");
-      return;
+    if (!classCode.trim()) {
+        Alert.alert("Error", "Please enter a class code.");
+        return;
     }
 
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: classCode, name: className }),
-      });
-      const result = await response.json();
+        const user = auth.currentUser;
+        if (!user) {
+            console.log("❌ No user is logged in.");
+            Alert.alert("Error", "No user logged in.");
+            return;
+        }
 
-      if (!response.ok) {
-        Alert.alert("Error", result.error || "Unable to add class.");
-      } else {
-        setRegisteredClasses(result.classes);
+        console.log(`✅ User found: ${user.uid}`);
+
+        // Check if class exists in Firestore
+        const classRef = doc(db, "classes", classCode);
+        const classSnap = await getDoc(classRef);
+
+        if (!classSnap.exists()) {
+            console.log(`❌ Class ${classCode} not found in Firestore.`);
+            Alert.alert("Error", `Class ${classCode} not found.`);
+            return;
+        }
+
+        const classData = classSnap.data();
+        console.log(`📄 Retrieved class data:`, classData);
+
+        const classTitle = classData?.Title || "Unknown Title"; // Ensure correct field mapping
+        console.log(`📝 Class title extracted: ${classTitle}`);
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+            console.log("❌ User document not found in Firestore.");
+            Alert.alert("Error", "User profile not found.");
+            return;
+        }
+
+        const userData = userSnap.data();
+        const existingClasses = userData.classes || [];
+
+        // Prevent duplicate class registrations
+        if (existingClasses.some((c: ClassItem) => c.code === classCode)) {
+            console.log(`⚠️ Class ${classCode} already registered.`);
+            Alert.alert("Warning", "You are already registered for this class.");
+            return;
+        }
+
+        console.log(`✅ Adding class ${classCode} to user profile...`);
+
+        // Add class to user's profile
+        await updateDoc(userRef, {
+            classes: arrayUnion({ code: classCode, title: classTitle }),
+        });
+
+        console.log("🎉 Class added successfully!");
+
+        // Update local state
+        setRegisteredClasses(prev => [...prev, { code: classCode, title: classTitle }]);
         setClassCode("");
-        setClassName("");
-      }
+
+        Alert.alert("Success", `Class ${classCode} (${classTitle}) added to your profile.`);
     } catch (error) {
-      console.error("Error adding class:", error);
-      Alert.alert("Network Error", "Could not connect to the server.");
+        console.error("❌ Error adding class:", error);
+        Alert.alert("Error", "Failed to add class.");
     }
-  };
+};
+
 
   const handleDone = () => {
     router.replace("/home");
@@ -69,35 +105,35 @@ export default function RegisterClassesPage() {
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Image source={require("../assets/images/left.png")} style={styles.backButtonImage} />
       </TouchableOpacity>
-      
+
       <TouchableOpacity style={styles.doneButton} onPress={handleDone}>
         <Text style={styles.doneButtonText}>Done</Text>
       </TouchableOpacity>
-      
+
       <Text style={styles.heading}>Register for Classes</Text>
       <Text style={styles.subheading}>Now it’s time to add classes!</Text>
-      
+
       <TextInput
         style={styles.input}
         placeholder="Enter Class Code"
         value={classCode}
         onChangeText={setClassCode}
       />
-      
+
       <TouchableOpacity style={styles.enterButton} onPress={handleAddClass}>
         <Text style={styles.enterButtonText}>Enter</Text>
       </TouchableOpacity>
-      
+
       {isLoading ? (
         <ActivityIndicator size="large" color="#007b5e" />
       ) : (
         <FlatList
           style={{ marginTop: 16, width: "100%" }}
           data={registeredClasses}
-          keyExtractor={(item) => item.code || Math.random().toString()}
+          keyExtractor={(item) => item.code}
           renderItem={({ item }) => (
             <View style={styles.classItem}>
-              <Text style={styles.classText}>{item.name} ({item.code})</Text>
+              <Text style={styles.classText}>{item.title} ({item.code})</Text>
             </View>
           )}
         />

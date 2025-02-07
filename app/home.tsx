@@ -39,12 +39,19 @@ export default function Home() {
                         <Ionicons name="trophy-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Leaderboard</Text>
                     </TouchableOpacity>
-                    {/* Here just in case we need extra 
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/leaderboard")}>
-                        <Ionicons name="(add icon here)" size={40} color="white" />
-                        <Text style={styles.widgetText}>black</Text>
+                </View>
+
+                {/*row 3*/}
+                <View style={styles.row}>
+                <TouchableOpacity style={styles.widget} onPress={() => router.push("/classPage")}>
+                        <Ionicons name="school-outline" size={40} color="white" />
+                        <Text style={styles.widgetText}>Classes</Text>
                     </TouchableOpacity>
-                    */}
+                    
+                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/setting")}>
+                        <Ionicons name="settings-outline" size={40} color="white" />
+                        <Text style={styles.widgetText}>Settings</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

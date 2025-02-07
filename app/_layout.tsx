@@ -160,6 +160,22 @@ export default function RootLayout() {
         name="home" 
         options={{ title: "Home", headerShown: false }}
       />
+      <Stack.Screen 
+        name="setting" 
+        options={{ title: "Settings", headerShown: false }}
+      />
+      <Stack.Screen 
+        name="legal-policies" 
+        options={{ title: "Policies", headerShown: false }}
+      />
+      <Stack.Screen 
+        name="crn" 
+        options={{ title: "Add Classes", headerShown: false }}
+      />
+      <Stack.Screen 
+        name="classPage" 
+        options={{ title: "Classes", headerShown: false }}
+      />
     </Stack>
   );
 }

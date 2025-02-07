@@ -1,6 +1,7 @@
 import { db } from "@/comp/firebase";
 import { useUserStore } from "@/comp/userStore";
 import { useAvatar } from "@/comp/avatarFetch"
+import { useChatStore } from "@/comp/chatStore"
 import { useRouter } from "expo-router";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -13,9 +14,13 @@ export default function ChatList() {
     const [avatar, setAvatar] = useState<{ [key: string]: any }>({});
     const [chats, setChats] = useState<any[]>([]);
     const { currentUser } = useUserStore();
+    const { fetchChatInfo } = useChatStore();
 
 
-
+    const handleSelect = async (chat: {chatId: string, user: string}) => {
+        fetchChatInfo(chat.chatId, chat.user)
+        router.push("/chat")
+    }
     useEffect(() => {
         const chatListFetch = onSnapshot(doc(db, "chats", currentUser.id), async (response) => {
             const data = response.data()?.chats || [];
@@ -61,7 +66,7 @@ export default function ChatList() {
             {chats.map((chat) => {
                 console.log(avatar[chat.user.id]);
                 return (
-                    <TouchableOpacity style={styles.chatItem} key={chat.chatId} onPress={() => router.push("/chat")}>
+                    <TouchableOpacity style={styles.chatItem} key={chat.chatId} onPress={() => handleSelect(chat)}>
                         <View>
                             {avatar[chat.user.id] ? (
                                 <Image source={avatar[chat.user.id]} style={styles.avatar} />
@@ -112,6 +117,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     lastMessage: {
-
+        color: '#949494'
     }
 });

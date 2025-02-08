@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, Button, StyleSheet, FlatList, View, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient'; // Add LinearGradient for the gradient effect
-import { db } from "../comp/firebase"; // Ensure correct Firebase import
-import { collection, query, where, orderBy, getDocs, updateDoc, doc } from "firebase/firestore";
+import { SafeAreaView, Text, StyleSheet, FlatList, View, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient'; // Background gradient effect
+import { db } from "../comp/firebase"; // Import Firebase
+import { collection, query, orderBy, getDocs, updateDoc, doc } from "firebase/firestore";
 
-// Define player interface
+// Define Player interface (now stored inside `users` collection)
 interface Player {
   id: string;
   username: string;
@@ -16,86 +16,63 @@ const Leaderboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
 
-  // Get the current semester
-  const getCurrentSemester = (): string => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth(); // January = 0, December = 11
-    return month < 6 ? `Spring-${year}` : `Fall-${year}`;
-  };
-
-  // Fetch the leaderboard data
+  // Fetch leaderboard data from USERS collection
   const fetchLeaderboard = async () => {
     setLoading(true);
-    const semester = getCurrentSemester();
-    const q = query(
-      collection(db, "players"),
-      where("semester", "==", semester),
-      orderBy("points", "desc")
-    );
+    try {
+        const q = query(collection(db, "users"), orderBy("points", "desc"));
+        const snapshot = await getDocs(q);
 
-    const snapshot = await getDocs(q);
-    const leaderboardData: Player[] = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      username: doc.data().username,
-      points: doc.data().points,
-    })) as Player[];
+        const leaderboardData: Player[] = snapshot.docs
+            .filter((doc) => doc.data().points !== undefined) // Ensure users have points field
+            .map((doc) => {
+                const userData = doc.data();
+                console.log("🔥 Retrieved User:", userData); // ✅ Log user data
+                return {
+                    id: doc.id, // Firestore user ID
+                    username: userData.username || "Unknown", // Handle missing username
+                    points: userData.points || 0, // Default to 0 if missing
+                };
+            });
 
-    setPlayers(leaderboardData);
-    setLoading(false);
+        console.log("🔥 Final Leaderboard Data:", leaderboardData); // ✅ Log final data array
+        setPlayers(leaderboardData);
+    } catch (error) {
+        console.error("❌ Error fetching leaderboard: ", error);
+    } finally {
+        setLoading(false);
+    }
   };
+
 
   useEffect(() => {
     fetchLeaderboard();
   }, []);
 
-  // Update points for a user
+  // Function to update player points
   const updatePlayerPoints = async (playerId: string, points: number) => {
     try {
-      const playerRef = doc(db, "players", playerId);
-      await updateDoc(playerRef, {
-        points: points,
-      });
-      setMessage('Points updated successfully!');
-      fetchLeaderboard(); // Refresh leaderboard after update
+      const userRef = doc(db, "users", playerId);
+      await updateDoc(userRef, { points });
+      setMessage(`Points updated for ${playerId}!`);
+      fetchLeaderboard(); // Refresh leaderboard
     } catch (error) {
       console.error("Error updating points: ", error);
     }
   };
 
-  // Reset leaderboard every semester
-  const resetLeaderboard = async () => {
-    try {
-      const semester = getCurrentSemester();
-      const q = query(collection(db, "players"), where("semester", "==", semester));
-      const snapshot = await getDocs(q);
-
-      snapshot.docs.forEach((docRef) => {
-        updateDoc(docRef.ref, { points: 0 }); // Reset points to 0
-      });
-
-      setMessage('Leaderboard reset successfully!');
-      fetchLeaderboard(); // Refresh leaderboard after reset
-    } catch (error) {
-      console.error("Error resetting leaderboard: ", error);
-    }
-  };
-
-  // Loading state
+  // Display loading message
   if (loading) {
-    return <Text>Loading leaderboard...</Text>;
+    return <Text style={styles.loadingText}>Loading leaderboard...</Text>;
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Gradient background using LinearGradient */}
-      <LinearGradient
-        colors={['#ff7e5f', '#feb47b']} // Change gradient colors as needed
-        style={styles.gradient}
-      >
-        <Text style={styles.header}>Leaderboard - {getCurrentSemester()}</Text>
+      {/* Gradient Background */}
+      <LinearGradient colors={['#ff7e5f', '#feb47b']} style={styles.gradient}>
+        <Text style={styles.header}>Leaderboard</Text>
 
-        {/* Display message */}
+        {/* Show message */}
         {message && <Text style={styles.message}>{message}</Text>}
 
         {/* Leaderboard List */}
@@ -105,19 +82,14 @@ const Leaderboard: React.FC = () => {
           renderItem={({ item, index }) => (
             <View style={styles.playerRow}>
               <Text style={styles.playerText}>
-                {index + 1}. {item.username} - {item.points} points
+                {index + 1}. {item.username} - {item.points} pts
               </Text>
               <TouchableOpacity onPress={() => updatePlayerPoints(item.id, item.points + 10)}>
-                <Text style={styles.button}>Add Points</Text>
+                <Text style={styles.button}>+10 Points</Text>
               </TouchableOpacity>
             </View>
           )}
         />
-
-        {/* Reset button for admin */}
-        <TouchableOpacity onPress={resetLeaderboard} style={styles.resetButton}>
-          <Text style={styles.resetButtonText}>Reset Leaderboard</Text>
-        </TouchableOpacity>
       </LinearGradient>
     </SafeAreaView>
   );
@@ -156,22 +128,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  resetButton: {
-    backgroundColor: '#ff7e5f',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  resetButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-  },
   message: {
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
     color: 'green',
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 50,
+    color: '#333',
   },
 });
 

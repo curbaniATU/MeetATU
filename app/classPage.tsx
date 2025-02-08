@@ -18,44 +18,65 @@ interface ClassData {
 export default function ClassesScreen() {
     const [classes, setClasses] = useState<ClassData[]>([]);
 
+    
+
+
     useEffect(() => {
         const fetchClasses = async () => {
             try {
                 const classCollection = await getDocs(collection(db, 'classes'));
-                const userCollection = await getDocs(collection(db, 'users')); // Fetch users instead
-        
+                const userCollection = await getDocs(collection(db, 'users')); 
+            
                 const classData: ClassData[] = classCollection.docs.map(doc => ({
                     id: doc.id,
                     Title: doc.data().Title,
                     Instructor: doc.data().Instructor,
-                    students: [] // Initially empty, will populate below
+                    students: [] // Will be populated below
                 }));
-        
-                const userData = userCollection.docs.map(doc => ({
-                    name: doc.data().name,
-                    enrolledClasses: doc.data().classes || [] // Ensure `classes` field exists
-                }));
-        
-                // Attach students to their respective classes
+            
+                const userData = userCollection.docs.map(doc => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        firstName: data.firstName || "",
+                        lastName: data.lastName || "",
+                        username: data.username || "Unknown",
+                        enrolledClasses: Array.isArray(data.classes) 
+                            ? data.classes.map((c: any) => c.code) 
+                            : []
+                    };
+                });
+    
+                console.log("📌 Users Data (Processed):", userData);
+                console.log("📌 Classes Data (Raw):", classData);
+    
+                // 🔥 Associate students with classes using `code`
                 classData.forEach(classItem => {
                     classItem.students = userData
-                        .filter(user => user.enrolledClasses.includes(classItem.id))
-                        .map(user => user.name);
+                        .filter(user => user.enrolledClasses.includes(classItem.id)) // Match by `code`
+                        .map(user => 
+                            user.firstName && user.lastName 
+                                ? `${user.firstName} ${user.lastName}` // Prefer full name
+                                : user.username // Fallback to username
+                        );
                 });
-        
+    
+                console.log("📌 Processed Class Data (With Students):", classData);
+    
                 setClasses(classData);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('❌ Error fetching data:', error);
             }
         };
-        
-
+    
         fetchClasses();
     }, []);
+    
+    
 
     const renderItem = ({ item }: { item: ClassData }) => (
         <View style={styles.classContainer}>
-            <Text style={styles.classTitle}>{item.Title}</Text>
+            <Text style={styles.classTitle}>{item.Title} ({item.id})</Text>
             <Text style={styles.instructor}>Instructor: {item.Instructor}</Text>
             {item.students.length > 0 ? (
                 <FlatList
@@ -93,6 +114,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         textAlign: 'center',
+        marginTop: 10,
         marginBottom: 20,
     },
     classContainer: {

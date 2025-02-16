@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, StyleSheet, FlatList, View, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, StyleSheet, FlatList, View, TouchableOpacity, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // Background gradient effect
 import { db } from "../comp/firebase"; // Import Firebase
-import { collection, query, orderBy, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, query, orderBy, getDocs, updateDoc, doc} from "firebase/firestore";
+import BottomNavBar from '../comp/BottomNavBarForLeaderboard';
 
 // Define Player interface (now stored inside `users` collection)
 interface Player {
@@ -24,26 +25,26 @@ const Leaderboard: React.FC = () => {
         const snapshot = await getDocs(q);
 
         const leaderboardData: Player[] = snapshot.docs
-            .filter((doc) => doc.data().points !== undefined) // Ensure users have points field
+            .filter((doc) => doc.data().points !== undefined) 
             .map((doc) => {
                 const userData = doc.data();
-                console.log("🔥 Retrieved User:", userData); // ✅ Log user data
+                console.log("🔥 Retrieved User:", userData); 
                 return {
-                    id: doc.id, // Firestore user ID
-                    username: userData.username || "Unknown", // Handle missing username
-                    points: userData.points || 0, // Default to 0 if missing
+                    id: doc.id, 
+                    username: userData.username || "Unknown", 
+                    points: userData.points || 0, 
                 };
             });
 
-        console.log("🔥 Final Leaderboard Data:", leaderboardData); // ✅ Log final data array
-        setPlayers(leaderboardData);
+        console.log("🔥 Final Leaderboard Data:", leaderboardData); 
+        const topPlayers = leaderboardData.slice(0, 3); 
+        setPlayers(topPlayers);
     } catch (error) {
         console.error("❌ Error fetching leaderboard: ", error);
     } finally {
         setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchLeaderboard();
@@ -55,46 +56,70 @@ const Leaderboard: React.FC = () => {
       const userRef = doc(db, "users", playerId);
       await updateDoc(userRef, { points });
       setMessage(`Points updated for ${playerId}!`);
-      fetchLeaderboard(); // Refresh leaderboard
+      fetchLeaderboard(); 
     } catch (error) {
       console.error("Error updating points: ", error);
     }
   };
 
-  // Display loading message
+
   if (loading) {
     return <Text style={styles.loadingText}>Loading leaderboard...</Text>;
   }
 
+  const renderMedal = (index: number) => {
+    if (index === 0) return "🥇"; 
+    if (index === 1) return "🥈";
+    if (index === 2) return "🥉"; 
+    return null;
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Gradient Background */}
-      <LinearGradient colors={['#ff7e5f', '#feb47b']} style={styles.gradient}>
-        <Text style={styles.header}>Leaderboard</Text>
-
-        {/* Show message */}
-        {message && <Text style={styles.message}>{message}</Text>}
-
-        {/* Leaderboard List */}
-        <FlatList
-          data={players}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <View style={styles.playerRow}>
-              <Text style={styles.playerText}>
-                {index + 1}. {item.username} - {item.points} pts
-              </Text>
-              <TouchableOpacity onPress={() => updatePlayerPoints(item.id, item.points + 10)}>
-                <Text style={styles.button}>+10 Points</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </LinearGradient>
-    </SafeAreaView>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      <SafeAreaView style={styles.container}>
+        <LinearGradient colors={['#24786D', '#3EA325']} style={styles.gradient}>
+          <Text style={styles.header}>Leaderboard</Text>
+  
+          {message && <Text style={styles.message}>{message}</Text>}
+  
+          <FlatList
+            data={players}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <View style={styles.playerRow}>
+                <Text style={styles.playerText}>
+                  {index + 1}. {item.username} - {item.points} pts
+                </Text>
+              </View>
+            )}
+          />
+  
+          <Text style={styles.chartHeader}>How to Earn Points</Text>
+          <View style={styles.chartContainer}>
+            <ScrollView style={styles.scrollContainer}>
+              <Text style={styles.chartText}>- Message someone in a class: 5 points</Text>
+              <Text style={styles.chartText}>- Message 5 people in a class: 20 points</Text>
+              <Text style={styles.chartText}>- Make a study chat: 10 points</Text>
+              <Text style={styles.chartText}>- Attend a study group: 20 points</Text>
+              <Text style={styles.chartText}>- Join a study event: 15 points</Text>
+              <Text style={styles.chartText}>- Participate in a group chat: 5 points</Text>
+              <Text style={styles.chartText}>- Reply to a message: 3 points</Text>
+              <Text style={styles.chartText}>- 20 points automatically for creating a profile</Text>
+              <Text style={styles.chartText}>- Send a friend request: 5 points</Text>
+              <Text style={styles.chartText}>- Accept a friend request: 5 points</Text>
+              <Text style={styles.chartText}>- Log in daily: 5 points</Text>
+              <Text style={styles.chartText}>- Leaderboard climb: 20 points</Text>
+              <Text style={styles.chartText}>- Fill out major, bio, classification: 5 points</Text>
+            </ScrollView>
+          </View>
+        </LinearGradient>
+      </SafeAreaView>
+  
+      <View style={styles.bottomSpacing}></View>
+      <BottomNavBar />
+    </View>
   );
-};
-
+            }  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -123,11 +148,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
   },
-  button: {
-    color: '#feb47b',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   message: {
     textAlign: 'center',
     marginTop: 20,
@@ -139,6 +159,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
     color: '#333',
+  },
+  chartContainer: {
+    marginTop: 30,
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  chartHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  chartText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
+  },
+  scrollContainer: {
+    maxHeight: 350, 
+  },
+  bottomSpacing: {
+    height: 70, // Adjust the height as needed
   },
 });
 

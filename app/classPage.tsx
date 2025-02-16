@@ -4,6 +4,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { app } from '../comp/firebase.js';
 import { db, auth } from "../comp/firebase"; // Adjust the path if needed
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import BottomNavBar from '../comp/BottomNavForClasses.js';
 
 
 {/*const db = getFirestore(app);*/}
@@ -98,6 +99,7 @@ export default function ClassesScreen() {
                 keyExtractor={item => item.id}
                 renderItem={renderItem}
             />
+<BottomNavBar />
         </SafeAreaView>
     );
 }

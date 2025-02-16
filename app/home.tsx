@@ -17,15 +17,15 @@ export default function Home() {
             <View style={styles.widgetContainer}>
                 {/*row 1*/}
                 <View style={styles.row}>
+                <TouchableOpacity style={styles.widget} onPress={() => router.push("/profile")}>
+                        <Ionicons name="person-circle-outline" size={40} color="white" />
+                        <Text style={styles.widgetText}>Profile</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.widget} onPress={() => router.push("/chat_list")}>
                         <Ionicons name="chatbubbles-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Messages</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/profile")}>
-                        <Ionicons name="person-circle-outline" size={40} color="white" />
-                        <Text style={styles.widgetText}>Profile</Text>
-                    </TouchableOpacity>
                 </View>
 
                 {/* Row 2 */}
@@ -43,11 +43,11 @@ export default function Home() {
 
                 {/*row 3*/}
                 <View style={styles.row}>
+                
                 <TouchableOpacity style={styles.widget} onPress={() => router.push("/classPage")}>
                         <Ionicons name="school-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Classes</Text>
                     </TouchableOpacity>
-                    
                     <TouchableOpacity style={styles.widget} onPress={() => router.push("/setting")}>
                         <Ionicons name="settings-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Settings</Text>

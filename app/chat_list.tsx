@@ -7,6 +7,7 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BottomNavBar from '../comp/BottomNavForMessages';
 
 
 export default function ChatList() {
@@ -81,6 +82,7 @@ export default function ChatList() {
                     </TouchableOpacity>
                 );
             })}
+             <BottomNavBar />
         </SafeAreaView>
     )
 

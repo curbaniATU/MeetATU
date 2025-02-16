@@ -2,6 +2,8 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { SafeAreaView, Text, Button, StyleSheet } from 'react-native';
+import BottomNavBar from '../comp/BottomNavForMessages';
+
 
 export default function Home() {
     const router = useRouter();
@@ -14,6 +16,7 @@ export default function Home() {
                 onPress={() => router.replace("/home")}
                 color="#007bff"
             />
+                <BottomNavBar />
         </SafeAreaView>
     );
 }

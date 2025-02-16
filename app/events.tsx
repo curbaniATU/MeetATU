@@ -6,6 +6,7 @@ import {
 import { useRouter } from 'expo-router';
 import { collection, addDoc, updateDoc, doc, onSnapshot, arrayRemove } from 'firebase/firestore';
 import { db, auth } from '../comp/firebase';
+import BottomNavBar from '../comp/BottomNavBarForEvents';
 
 // Define Interfaces
 interface Event {
@@ -149,11 +150,13 @@ const createEvent = async () => {
   // **Main Event List View**
   if (!creatingEvent) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>Your Study Groups</Text>
-
-        {loading ? <Text>Loading events...</Text> : (
-          events.length > 0 ? (
+      <View style={{ flex: 1, justifyContent: 'space-between' }}>
+        <SafeAreaView style={styles.container}>
+          <Text style={styles.title}>Your Study Groups</Text>
+    
+          {loading ? (
+            <Text>Loading events...</Text>
+          ) : events.length > 0 ? (
             <FlatList
               data={events}
               keyExtractor={(item) => item.id}
@@ -161,7 +164,10 @@ const createEvent = async () => {
                 <View style={styles.eventContainer}>
                   <Text style={styles.eventTitle}>{item.name}</Text>
                   <Text style={styles.eventDescription}>{item.description}</Text>
-                  <TouchableOpacity onPress={() => leaveEvent(item.id)} style={styles.leaveButton}>
+                  <TouchableOpacity
+                    onPress={() => leaveEvent(item.id)}
+                    style={styles.leaveButton}
+                  >
                     <Text style={styles.leaveButtonText}>Leave Group</Text>
                   </TouchableOpacity>
                 </View>
@@ -169,17 +175,22 @@ const createEvent = async () => {
             />
           ) : (
             <Text style={styles.noEventsText}>No events joined yet.</Text>
-          )
-        )}
-
-        <TouchableOpacity style={styles.createButton} onPress={toggleView}>
-          <Text style={styles.createButtonText}>Create a study group</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.push("/home")}>
-          <Text style={styles.backButtonText}>Go to homepage</Text>
-        </TouchableOpacity>
-      </SafeAreaView>
+          )}
+    
+          <TouchableOpacity style={styles.createButton} onPress={toggleView}>
+            <Text style={styles.createButtonText}>Create a study group</Text>
+          </TouchableOpacity>
+    
+          <TouchableOpacity style={styles.backButton} onPress={() => router.push('/home')}>
+            <Text style={styles.backButtonText}>Go to homepage</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+    
+        {/* ✅ Navigation bar stays at the bottom */}
+        <BottomNavBar />
+      </View>
     );
+    
   }
 
   // **Event Creation View**
@@ -205,7 +216,9 @@ const createEvent = async () => {
               </TouchableOpacity>
             )}
           />
+  
         </View>
+      
       )}
 
       <TouchableOpacity style={styles.createButton} onPress={createEvent}>
@@ -215,6 +228,7 @@ const createEvent = async () => {
       <TouchableOpacity style={styles.backButton} onPress={toggleView}>
         <Text style={styles.backButtonText}>Back to Events</Text>
       </TouchableOpacity>
+
     </SafeAreaView>
   );
 };
@@ -223,6 +237,11 @@ export default Events;
 
 // 🔥 **Styles**
 const styles = StyleSheet.create({
+  content: {
+    flexGrow: 1, // ✅ Pushes content to take available space
+    justifyContent: 'center', // Keeps content centered if there's extra space
+    paddingBottom: 20, // Adds spacing before navbar
+  },
     container: {
       flex: 1,
       padding: 20,

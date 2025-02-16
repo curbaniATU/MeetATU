@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../comp/firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
+import { Ionicons } from '@expo/vector-icons';
 import {
   View,
   Text,
@@ -139,24 +140,25 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      {/* Header with name at the top */}
-      <View style={styles.header}>
-        <Text style={styles.nameText}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>
 
-        <View style={styles.avatarSection}>
-          <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.avatarContainer}>
-            <Image
-              source={selectedAvatar.source}
-              style={styles.profileImage}
-            />
-            <Image
-              source={require('../assets/images/edit.png')}
-              style={styles.editIcon}
-            />
-          </TouchableOpacity>
-          <Text style={styles.avatarEditText}>Tap to change avatar</Text>
-        </View>
-      </View>
+  {/* Settings Button (Fixed Top Right) */}
+  <TouchableOpacity style={styles.settingsButton} onPress={() => router.push("/setting")}>
+    <Ionicons name="settings-outline" size={30} color="#24786D" />
+  </TouchableOpacity>
+
+  {/* Header with name at the top */}
+  <View style={styles.header}>
+    <Text style={styles.nameText}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>
+
+    <View style={styles.avatarSection}>
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.avatarContainer}>
+        <Image source={selectedAvatar.source} style={styles.profileImage} />
+        <Image source={require('../assets/images/edit.png')} style={styles.editIcon} />
+      </TouchableOpacity>
+      <Text style={styles.avatarEditText}>Tap to change avatar</Text>
+    </View>
+  </View>
+
 
       <Modal
         animationType="slide"
@@ -230,7 +232,7 @@ export default function Profile() {
           <Text style={styles.buttonText1}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.sideButton} onPress={() => router.push("/home")}>
-          <Text style={styles.buttonText1}>Go to homepage</Text>
+          <Text style={styles.buttonText1}> Back to Home</Text>
         </TouchableOpacity>
       </View>
 
@@ -263,9 +265,18 @@ const styles = StyleSheet.create({
   avatarContainer: { alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom: 0 },
   editIcon: { position: 'absolute', bottom: 10, right: 10, width: 24, height: 24 },
   // Button styles
-  buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
-  buttonText1: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  buttonText2: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 },
+  buttonText1: { color: '#fff', fontSize: 16, fontWeight: 'bold',textAlign:"center" },
+  buttonText2: { color: "#fff", fontSize: 16, fontWeight: "bold" ,textAlign:"center"},
   sideButton: { backgroundColor: '#24786D', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, flex: 1, alignItems: 'center', marginHorizontal: 5 },
   sideButton2: { backgroundColor: '#f54242', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, marginBottom: 20, flex: 1, alignItems: 'center', marginHorizontal: 5 },
+  settingsButton: {
+    position: 'absolute',
+    top: 50, // Adjust based on your SafeAreaView
+    right: 20, // Distance from the right
+    padding: 10,
+    borderRadius: 50,
+    zIndex: 10, // Ensure it stays above other elements
+  },
+  
 });

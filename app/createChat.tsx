@@ -10,8 +10,10 @@ import {
     Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, updateDoc, setDoc, serverTimestamp, doc, arrayUnion, getDoc } from "firebase/firestore";
 import { db, auth } from "@/comp/firebase";
+import { useUserStore } from "@/comp/userStore";
+import { useChatStore } from "@/comp/chatStore";
 
 interface User {
     id: string;
@@ -21,9 +23,11 @@ interface User {
 
 const CreateChat = () => {
     const router = useRouter();
-    const currentUser = auth.currentUser?.uid;
+    const { currentUser } = useUserStore();
+    const { fetchChatInfo } = useChatStore();
 
     // Search and User List
+    const [recipient, setRecipient ] = useState();
     const [searchQuery, setSearchQuery] = useState("");
     const [users, setUsers] = useState<User[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -62,14 +66,46 @@ const CreateChat = () => {
             return;
         }
 
+        const chatsRef = collection(db, "chats");
+        const chatLogsRef = collection(db, "chatlogs");        
+        
         try {
-            await addDoc(collection(db, "chats"), {
-                users: [currentUser, user.id],
-                createdAt: new Date(),
-                lastMessage: "",
+            
+            const newChatLogsRef = doc(chatLogsRef);
+
+            await setDoc(newChatLogsRef, {
+                createdAt: serverTimestamp(),
+                messages: [],
+            });
+
+            await updateDoc(doc(chatsRef, user.id), {
+                chats:arrayUnion({
+                    chatId: newChatLogsRef.id,
+                    lastMessage: "",
+                    receiverId: currentUser.id,
+                    updatedAt: Date.now()
+                }),
+                
+            });
+
+            await updateDoc(doc(chatsRef, currentUser.id), {
+                chats:arrayUnion({
+                    chatId: newChatLogsRef.id,
+                    lastMessage: "",
+                    receiverId: user.id,
+                    updatedAt: Date.now()
+                }),
+                
             });
 
             Alert.alert("Success", "Chat created!");
+            const userDocRef = doc(db, "users", user.id);
+            const userDocSnap = await getDoc(userDocRef)
+
+            const recipient = userDocSnap.data();
+
+            console.log(newChatLogsRef.id, recipient);
+            fetchChatInfo(newChatLogsRef.id, recipient);
             router.push("/chat"); // Navigate to chat
         } catch (error) {
             console.error("Error creating chat:", error);

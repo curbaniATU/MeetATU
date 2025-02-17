@@ -30,7 +30,7 @@ export default function ChatList() {
             });
 
             const chatData = await Promise.all(promises);
-            setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
+            setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
         });
 
         return () => {

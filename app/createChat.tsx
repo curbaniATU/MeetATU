@@ -144,13 +144,46 @@ const CreateChat = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: "#E3E4E4" },
-    title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginBottom: 20 },
-    input: { padding: 10, backgroundColor: "white", marginBottom: 10, borderRadius: 5 },
-    userItem: { padding: 15, borderBottomWidth: 1, borderColor: "#ccc" },
-    userText: { fontSize: 16 },
-    backButton: { marginTop: 10, backgroundColor: "#24786D", padding: 10, borderRadius: 5, alignItems: "center" },
-    backButtonText: { color: "white", fontSize: 16 },
+    container: { 
+        flex: 1, 
+        padding: 20, 
+        backgroundColor: "#E3E4E4" 
+    },
+    title: { 
+        fontSize: 24, 
+        fontWeight: "bold", 
+        textAlign: "center", 
+        marginBottom: 20 
+    },
+    input: { 
+        padding: 10, 
+        backgroundColor: "white", 
+        marginBottom: 10, 
+        borderRadius: 5,
+        marginLeft: 10,
+        marginRight: 10, 
+    },
+    userItem: { 
+        padding: 15, 
+        borderBottomWidth: 1, 
+        borderColor: "#ccc" 
+    },
+    userText: { 
+        fontSize: 16 
+    },
+    backButton: { 
+        marginTop: 10, 
+        backgroundColor: "#24786D", 
+        padding: 10, 
+        borderRadius: 20, 
+        alignItems: "center", 
+        marginLeft: 10,
+        marginRight: 10,
+    },
+    backButtonText: { 
+        color: "white", 
+        fontSize: 16 
+    },
 });
 
 export default CreateChat;

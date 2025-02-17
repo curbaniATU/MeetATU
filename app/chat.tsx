@@ -52,6 +52,7 @@ export default function Chat() {
 
                 }
             })
+            setText("")
         } catch(error) {
             console.log(error);
         }
@@ -75,7 +76,6 @@ export default function Chat() {
         if (user?.profileAvatar){
             const avatarRef = useAvatar(user.profileAvatar);
             setAvatar(avatarRef);
-            console.log(avatar);
         }
     }, [])
 
@@ -97,7 +97,8 @@ export default function Chat() {
             <View style={styles.textArea}>
                 <TextInput 
                 style={styles.input} 
-                onChangeText={text => setText(text)} 
+                value={text}
+                onChangeText={t => setText(t)} 
                 placeholder="Type message here..." 
                 placeholderTextColor="C5C5C5" />
                 <Button title="Send" onPress={handleSend} />

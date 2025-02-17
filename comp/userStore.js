@@ -1,81 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../comp/firebase';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { SafeAreaView, Text, StyleSheet, FlatList, View } from 'react-native';
+import { create } from "zustand";
+import { db } from "./firebase";
+import { doc, getDoc } from "firebase/firestore";
 
-const Leaderboard = () => {
-  const [leaderboard, setLeaderboard] = useState([]);
+export const useUserStore = create((set) => ({
+    currentUser: null,
 
-  useEffect(() => {
-    const leaderboardQuery = query(
-      collection(db, 'leaderboard'),
-      orderBy('points', 'desc'), // Sort by points in descending order
-      limit(10) // Show top 10 users
-    );
+    fetchUserInfo: async (uid) => {
+        if(!uid) return set({currentUser: null});
 
-    const unsubscribe = onSnapshot(leaderboardQuery, (snapshot) => {
-      const leaderboardData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setLeaderboard(leaderboardData);
-    });
+        try{
+            const docRef = doc(db, "users", uid);
+            const docSnap = await getDoc(docRef);
 
-    return () => unsubscribe(); // Clean up listener when component unmounts
-  }, []);
+            if(docSnap.exists()){
+                set({currentUser: docSnap.data()});
+            } else{
+                set({currentUser: null});
+            }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Leaderboard</Text>
+        } catch(error ){
+            console.log("Error Fetching User Details:", error);
+            return set({currentUser: null});
+        }
+    },
 
-      <FlatList
-        data={leaderboard}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <View style={styles.userContainer}>
-            <Text style={styles.rank}>#{index + 1}</Text>
-            <Text style={styles.username}>{item.username}</Text>
-            <Text style={styles.points}>{item.points} points</Text>
-          </View>
-        )}
-      />
-    </SafeAreaView>
-  );
-};
+    //This is where it adds points on user actions 
+    addPoints: async (uid, action) => {
+        if (!uid) return;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  userContainer: {
-    padding: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  rank: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  username: {
-    fontSize: 18,
-    color: '#555',
-  },
-  points: {
-    fontSize: 16,
-    color: '#888',
-  },
-});
+        // Define point system
+        const pointsMap = {
+            message_classmate: 5,
+            message_5_people: 20,
+            make_study_chat: 10,
+            attend_study_group: 20,
+            join_study_event: 15,
+            group_chat_message: 5,
+            reply_message: 3,
+            create_profile: 20,
+            send_friend_request: 5,
+            accept_friend_request: 5,
+            daily_login: 5,
+            leaderboard_climb: 20,
+            fill_out_profile: 5,
+        };
 
-export default Leaderboard;
+        const points = pointsMap[action] || 0;
+
+        if (points === 0) return; // Prevent updating if no valid action
+
+        try {
+            const userRef = doc(db, "users", uid);
+            await updateDoc(userRef, { points: increment(points) });
+            console.log(`✅ Added ${points} points for action: ${action}`);
+
+            // Update local state
+            set((state) => ({
+                currentUser: state.currentUser
+                    ? { ...state.currentUser, points: (state.currentUser.points || 0) + points }
+                    : null,
+            }));
+        } catch (error) {
+            console.error("❌ Error updating points: ", error);
+        }
+    },
+}))

@@ -111,7 +111,7 @@ export default function RegisterClassesPage() {
       </TouchableOpacity>
 
       <Text style={styles.heading}>Register for Classes</Text>
-      <Text style={styles.subheading}>Now it’s time to add classes!</Text>
+      <Text style={styles.subheading}>It’s time to add your classes!</Text>
 
       <TextInput
         style={styles.input}

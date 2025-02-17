@@ -176,6 +176,10 @@ export default function RootLayout() {
         name="classPage" 
         options={{ title: "Classes", headerShown: false }}
       />
+      <Stack.Screen 
+        name="createChat" 
+        options={{ title: "Creat a Chat", headerShown: false }}
+      />
     </Stack>
   );
 }

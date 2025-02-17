@@ -195,6 +195,7 @@ const createEvent = async () => {
 
   // **Event Creation View**
   return (
+    <View style={{ flex: 1, justifyContent: 'space-between' }}>
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Create Study Group Event</Text>
 
@@ -216,7 +217,6 @@ const createEvent = async () => {
               </TouchableOpacity>
             )}
           />
-  
         </View>
       
       )}
@@ -228,8 +228,10 @@ const createEvent = async () => {
       <TouchableOpacity style={styles.backButton} onPress={toggleView}>
         <Text style={styles.backButtonText}>Back to Events</Text>
       </TouchableOpacity>
-
     </SafeAreaView>
+    
+    <BottomNavBar />
+    </View>
   );
 };
 
@@ -238,9 +240,9 @@ export default Events;
 // 🔥 **Styles**
 const styles = StyleSheet.create({
   content: {
-    flexGrow: 1, // ✅ Pushes content to take available space
-    justifyContent: 'center', // Keeps content centered if there's extra space
-    paddingBottom: 20, // Adds spacing before navbar
+    flexGrow: 1, 
+    justifyContent: 'center',
+    paddingBottom: 20,
   },
     container: {
       flex: 1,
@@ -262,13 +264,15 @@ const styles = StyleSheet.create({
       borderRadius: 10, 
       marginBottom: 10,
     },
-    subtitle: {  // ✅ Added missing subtitle style
+    subtitle: {  
       fontSize: 20,
       fontWeight: '600',
       marginVertical: 10,
       color: '#333',
+      marginLeft: 10,
+      marginRight: 10,
     },
-    input: {  // ✅ Added missing input style
+    input: {  
       backgroundColor: '#fff',
       borderColor: '#ccc',
       borderWidth: 1,
@@ -276,11 +280,13 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       borderRadius: 8,
       marginBottom: 10,
+      marginLeft: 10,
+      marginRight: 10,
     },
-    multiline: {  // ✅ Added missing multiline style
+    multiline: {
       height: 80,
     },
-    dropdown: {  // ✅ Added missing dropdown style
+    dropdown: {  
       backgroundColor: '#fff',
       borderColor: '#ccc',
       borderWidth: 1,
@@ -288,16 +294,16 @@ const styles = StyleSheet.create({
       maxHeight: 150,
       marginBottom: 10,
     },
-    dropdownItem: {  // ✅ Added missing dropdownItem style
+    dropdownItem: {
       padding: 10,
       borderBottomColor: '#eee',
       borderBottomWidth: 1,
     },
-    dropdownItemText: {  // ✅ Added missing dropdownItemText style
+    dropdownItemText: {  
       fontSize: 16,
       color: '#333',
     },
-    backButton: {  // ✅ Added missing backButton style
+    backButton: {  
       backgroundColor: '#24786D',
       paddingVertical: 10,
       borderRadius: 20,
@@ -306,7 +312,7 @@ const styles = StyleSheet.create({
       marginLeft: 18,
       marginRight: 18,
     },
-    backButtonText: {  // ✅ Added missing backButtonText style
+    backButtonText: {
       color: '#fff',
       fontSize: 18,
       fontWeight: 'bold',

@@ -8,6 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { db, auth } from "../comp/firebase"; // Ensure correct Firebase instance
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import BottomNavBar from '../comp/BottomNavBarForEvents';
 
 interface ClassItem {
   code: string;
@@ -96,19 +97,10 @@ export default function RegisterClassesPage() {
 };
 
 
-  const handleDone = () => {
-    router.replace("/home");
-  };
 
   return (
+    <View style={{ flex: 1, justifyContent: 'space-between' }}>
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Image source={require("../assets/images/left.png")} style={styles.backButtonImage} />
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.doneButton} onPress={handleDone}>
-        <Text style={styles.doneButtonText}>Done</Text>
-      </TouchableOpacity>
 
       <Text style={styles.heading}>Register for Classes</Text>
       <Text style={styles.subheading}>It’s time to add your classes!</Text>
@@ -121,8 +113,10 @@ export default function RegisterClassesPage() {
       />
 
       <TouchableOpacity style={styles.enterButton} onPress={handleAddClass}>
-        <Text style={styles.enterButtonText}>Enter</Text>
+        <Text style={styles.enterButtonText}>Submit</Text>
       </TouchableOpacity>
+
+      <Text style={styles.subheading}>By submitting, you consent to sharing your class enrollment status with student in your same class.</Text>
 
       {isLoading ? (
         <ActivityIndicator size="large" color="#007b5e" />
@@ -139,6 +133,9 @@ export default function RegisterClassesPage() {
         />
       )}
     </SafeAreaView>
+
+    <BottomNavBar />
+    </View>
   );
 }
 
@@ -149,32 +146,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f3f3f3",
     padding: 16,
   },
-  backButton: {
-    position: "absolute",
-    top: 10,
-    left: 5,
-    padding: 6,
-    borderRadius: 2,
-  },
-  backButtonImage: {
-    width: 30,
-    height: 30,
-    resizeMode: "contain",
-  },
-  doneButton: {
-    position: "absolute",
-    top: 15,
-    right: 20,
-  },
-  doneButtonText: {
-    color: "#004d2b",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   heading: {
     fontSize: 26,
     fontWeight: "bold",
-    marginBottom: 8,
     color: "#004d2b",
     marginTop: 60,
   },
@@ -182,6 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#007b5e",
     marginBottom: 16,
+    marginTop: 8,
   },
   input: {
     width: "95%",
@@ -189,6 +164,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#007b5e",
     borderRadius: 5,
+    marginTop: 50,
     marginBottom: 16,
     backgroundColor: "#fff",
   },

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../comp/firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
+import BottomNavBar from '../comp/BottomNavBarForEvents';
 import {
   View,
   Text,
@@ -139,25 +140,27 @@ export default function Profile() {
   }
 
   return (
+    
+    <View style={{ flex: 1, justifyContent: 'space-between' }}>
     <View style={styles.container}>
 
-  {/* Settings Button (Fixed Top Right) */}
-  <TouchableOpacity style={styles.settingsButton} onPress={() => router.push("/setting")}>
-    <Ionicons name="settings-outline" size={30} color="#24786D" />
-  </TouchableOpacity>
+      {/* Settings Button (Fixed Top Right) 
+      <TouchableOpacity style={styles.settingsButton} onPress={() => router.push("/setting")}>
+        <Ionicons name="settings-outline" size={30} color="#24786D" />
+      </TouchableOpacity>*/}
 
-  {/* Header with name at the top */}
-  <View style={styles.header}>
-    <Text style={styles.nameText}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>
+      {/* Header with name at the top */}
+      <View style={styles.header}>
+      <Text style={styles.nameText}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>
 
-    <View style={styles.avatarSection}>
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.avatarContainer}>
-        <Image source={selectedAvatar.source} style={styles.profileImage} />
-        <Image source={require('../assets/images/edit.png')} style={styles.editIcon} />
-      </TouchableOpacity>
-      <Text style={styles.avatarEditText}>Tap to change avatar</Text>
-    </View>
-  </View>
+      <View style={styles.avatarSection}>
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.avatarContainer}>
+          <Image source={selectedAvatar.source} style={styles.profileImage} />
+          <Image source={require('../assets/images/edit.png')} style={styles.editIcon} />
+        </TouchableOpacity>
+        <Text style={styles.avatarEditText}>Tap to change avatar</Text>
+        </View>
+      </View>
 
 
       <Modal
@@ -227,56 +230,155 @@ export default function Profile() {
       </View>
 
       {/* Side-by-side buttons */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.sideButton} onPress={handleEditProfile}>
-          <Text style={styles.buttonText1}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sideButton} onPress={() => router.push("/home")}>
-          <Text style={styles.buttonText1}> Back to Home</Text>
-        </TouchableOpacity>
-      </View>
 
       <View style={styles.buttonRow}>
+      <TouchableOpacity style={styles.sideButton} onPress={handleEditProfile}>
+          <Text style={styles.buttonText1}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
+        </TouchableOpacity>
       <TouchableOpacity style={styles.sideButton2} onPress={async () => {
         await auth.signOut();
-        router.replace("/login");
-      }}>
+        router.replace("/login"); }}>
         <Text style={styles.buttonText2}>Logout</Text>
       </TouchableOpacity>
       </View>
+
+      
+      </View>
+    <BottomNavBar />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 100, backgroundColor: "#f5f5f5" },
-  loading: { flex: 1, justifyContent: "center" },
-  header: { alignItems: "center" },
-  nameText: { fontSize: 24, fontWeight: "bold", color: "#333", marginBottom: 5 },
-  avatarSection: { alignItems: 'center' },
-  profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 4 },
-  avatarEditText: { color: '#ccc', fontSize: 14, marginBottom: 0 },
-  detailsContainer: { marginVertical: 20, backgroundColor: "#fff", padding: 15, borderRadius: 8 },
-  label: { fontSize: 16, fontWeight: "bold", color: "#333" },
-  text: { fontSize: 16, color: "#555", marginBottom: 10 },
-  input: { fontSize: 16, color: "#333", marginBottom: 10, borderBottomWidth: 1, borderBottomColor: "#ccc", padding: 5 },
-  modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.9)' },
-  avatarOption: { width: 80, height: 80, margin: 10, borderRadius: 40, borderWidth: 2, borderColor: '#fff' },
-  avatarContainer: { alignItems: 'center', justifyContent: 'center', position: 'relative', marginBottom: 0 },
-  editIcon: { position: 'absolute', bottom: 10, right: 10, width: 24, height: 24 },
+  container: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 100,
+    backgroundColor: "#f5f5f5"
+  },
+  loading: { 
+    flex: 1, 
+    justifyContent: "center" 
+  },
+  header: { 
+    alignItems: "center" 
+  },
+  nameText: { 
+    fontSize: 24, 
+    fontWeight: "bold", 
+    color: "#333", 
+    marginBottom: 5 
+  },
+  avatarSection: { 
+    alignItems: 'center' 
+  },
+  profileImage: { 
+    width: 100, 
+    height: 100, 
+    borderRadius: 50, 
+    marginBottom: 4 
+  },
+  avatarEditText: { 
+    color: '#ccc', 
+    fontSize: 14, 
+    marginBottom: 0 
+  },
+  detailsContainer: { 
+    marginVertical: 10, 
+    backgroundColor: "#fff", 
+    padding: 15, 
+    borderRadius: 8 
+  },
+  label: { 
+    fontSize: 16, 
+    fontWeight: "bold", 
+    color: "#333" 
+  },
+  text: { 
+    fontSize: 16, 
+    color: "#555", 
+    marginBottom: 10 
+  },
+  input: { 
+    fontSize: 16, 
+    color: "#333", 
+    marginBottom: 10, 
+    borderBottomWidth: 1, 
+    borderBottomColor: "#ccc", 
+    padding: 5 
+  },
+  modalContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(0,0,0,0.9)' 
+  },
+  avatarOption: { 
+    width: 80, 
+    height: 80, 
+    margin: 10, 
+    borderRadius: 40, 
+    borderWidth: 2, 
+    borderColor: '#fff' 
+  },
+  avatarContainer: { 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    position: 'relative', 
+    marginBottom: 0 
+  },
+  editIcon: { 
+    position: 'absolute', 
+    bottom: 10, 
+    right: 10, 
+    width: 24, 
+    height: 24 
+  },
   // Button styles
-  buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 },
-  buttonText1: { color: '#fff', fontSize: 16, fontWeight: 'bold',textAlign:"center" },
-  buttonText2: { color: "#fff", fontSize: 16, fontWeight: "bold" ,textAlign:"center"},
-  sideButton: { backgroundColor: '#24786D', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, flex: 1, alignItems: 'center', marginHorizontal: 5 },
-  sideButton2: { backgroundColor: '#f54242', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, marginBottom: 20, flex: 1, alignItems: 'center', marginHorizontal: 5 },
+  buttonRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginTop: 30 
+  },
+  buttonText1: { 
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: 'bold',
+    textAlign:"center" 
+  },
+  buttonText2: { 
+    color: "#fff", 
+    fontSize: 16, 
+    fontWeight: "bold",
+    textAlign:"center"
+  },
+  sideButton: { 
+    backgroundColor: '#24786D', 
+    paddingVertical: 12, 
+    paddingHorizontal: 20, 
+    borderRadius: 20, 
+    marginBottom: 20, 
+    flex: 1, 
+    alignItems: 'center', 
+    marginHorizontal: 5 
+  },
+  sideButton2: { 
+    backgroundColor: '#f54242', 
+    paddingVertical: 12, 
+    paddingHorizontal: 20, 
+    borderRadius: 20, 
+    marginBottom: 20, 
+    flex: 1, 
+    alignItems: 'center', 
+    marginHorizontal: 5 
+  },
   settingsButton: {
     position: 'absolute',
-    top: 50, // Adjust based on your SafeAreaView
-    right: 20, // Distance from the right
+    top: 50, 
+    right: 20,
     padding: 10,
     borderRadius: 50,
-    zIndex: 10, // Ensure it stays above other elements
+    zIndex: 10, 
   },
   
 });

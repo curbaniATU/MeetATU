@@ -18,6 +18,7 @@ import { auth, db } from "../comp/firebase";
 import { signOut } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { useUserStore } from "../comp/userStore";
+import BottomNavBar from '../comp/BottomNavBarForEvents';
 
 const avatarOptions = [
     { filename: "black.png", source: require('../assets/Avatars/black.png') },
@@ -83,6 +84,7 @@ export default function SettingsScreen() {
     };
 
     return (
+    <View style={{ flex: 1, justifyContent: 'space-between' }}>
         <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
             <Text style={[styles.heading, darkMode && styles.darkText]}>Settings</Text>
 
@@ -134,29 +136,106 @@ export default function SettingsScreen() {
                 <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.backButton} onPress={() => router.push("/home")}> 
-                <Text style={styles.backButtonText}>Back to Home</Text>
-            </TouchableOpacity>
         </SafeAreaView>
+        <BottomNavBar />
+        </View>
     );
 }
 const styles = StyleSheet.create({
-    reportButton: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#ccc' },
-    legalButton: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#ccc' },
-    container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f5f5f5', padding: 20 },
-    darkContainer: { backgroundColor: '#121212' },
-    heading: { fontSize: 28, fontWeight: 'bold', marginBottom: 30, color: '#333' },
-    darkText: { color: '#fff' },
-
-    settingItem: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#ccc' },
-    settingText: { color: '#007b5e' , fontSize: 18 },
-    logoutButton: { marginTop: 30, paddingVertical: 12, paddingHorizontal: 20, backgroundColor: '#f54242', borderRadius: 10 },
-    backButton: { marginTop: 20, paddingVertical: 12, paddingHorizontal: 20, backgroundColor: '#007b5e', borderRadius: 10 },
-    buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-    backButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-    profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 10 },
-    avatarContainer: { alignItems: 'center', marginBottom: 20 },
-
-    modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
-    avatarOption: { width: 80, height: 80, margin: 10, borderRadius: 40, borderWidth: 2, borderColor: '#fff' },
+    reportButton: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        width: '80%', 
+        paddingVertical: 15, 
+        borderBottomWidth: 1, 
+        borderBottomColor: '#ccc' 
+    },
+    legalButton: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        width: '80%', paddingVertical: 15, 
+        borderBottomWidth: 1, 
+        borderBottomColor: '#ccc' 
+    },
+    container: { 
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        backgroundColor: '#f5f5f5', 
+        padding: 20 
+    },
+    darkContainer: { 
+        backgroundColor: '#121212' 
+    },
+    heading: { 
+        fontSize: 28, 
+        fontWeight: 'bold', 
+        marginBottom: 30, 
+        color: '#333' 
+    },
+    darkText: { 
+        color: '#fff' 
+    },
+    settingItem: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        width: '80%', 
+        paddingVertical: 15, 
+        borderBottomWidth: 1, 
+        borderBottomColor: '#ccc' 
+    },
+    settingText: { 
+        color: '#007b5e', 
+        fontSize: 18 
+    },
+    logoutButton: { 
+        marginTop: 20,
+        backgroundColor: '#f54242', 
+        paddingVertical: 12, 
+        paddingHorizontal: 20, 
+        borderRadius: 20, 
+        marginBottom: 200, 
+        alignItems: 'center', 
+        marginHorizontal: 5 
+    },
+    backButton: { 
+        marginTop: 20, 
+        paddingVertical: 12, 
+        paddingHorizontal: 20, 
+        backgroundColor: '#007b5e', 
+        borderRadius: 10 
+    },
+    buttonText: { 
+        color: '#fff', 
+        fontSize: 16, 
+        fontWeight: 'bold' 
+    },
+    backButtonText: { 
+        color: '#fff', 
+        fontSize: 16, 
+        fontWeight: 'bold' 
+    },
+    profileImage: { 
+        width: 100, 
+        height: 100, 
+        borderRadius: 50, 
+        marginBottom: 10 
+    },
+    avatarContainer: { 
+        alignItems: 'center', 
+        marginBottom: 20 
+    },
+    modalContainer: { 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: 'rgba(0,0,0,0.7)' 
+    },
+    avatarOption: { 
+        width: 80, 
+        height: 80, 
+        margin: 10, 
+        borderRadius: 40, 
+        borderWidth: 2, 
+        borderColor: '#fff' },
 });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, ActivityIndicator } from "react-native";
 import {
-  SafeAreaView, Text, TextInput,
+  SafeAreaView, Text, TextInput, Image,
   TouchableOpacity, FlatList, StyleSheet, View
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -35,26 +35,33 @@ export default function RegisterClassesPage() {
     try {
         const user = auth.currentUser;
         if (!user) {
+            console.log("❌ No user is logged in.");
             Alert.alert("Error", "No user logged in.");
             return;
         }
+        console.log(`✅ User found: ${user.uid}`);
 
         // Check if class exists in Firestore
         const classRef = doc(db, "classes", classCode);
         const classSnap = await getDoc(classRef);
 
         if (!classSnap.exists()) {
+            console.log(`❌ Class ${classCode} not found in Firestore.`);
             Alert.alert("Error", `Class ${classCode} not found.`);
             return;
         }
 
         const classData = classSnap.data();
+        console.log(`📄 Retrieved class data:`, classData);
+
         const classTitle = classData?.Title || "Unknown Title"; // Ensure correct field mapping
+        console.log(`📝 Class title extracted: ${classTitle}`);
 
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
         if (!userSnap.exists()) {
+            console.log("❌ User document not found in Firestore.");
             Alert.alert("Error", "User profile not found.");
             return;
         }
@@ -63,15 +70,18 @@ export default function RegisterClassesPage() {
         const existingClasses = userData.classes || [];
 
         // Prevent duplicate class registrations
+        console.log(`⚠️ Class ${classCode} already registered.`);
         if (existingClasses.some((c: ClassItem) => c.code === classCode)) {
             Alert.alert("Warning", "You are already registered for this class.");
             return;
         }
+        console.log(`✅ Adding class ${classCode} to user profile...`);
 
         // Add class to user's profile
         await updateDoc(userRef, {
             classes: arrayUnion({ code: classCode, title: classTitle }),
         });
+        console.log("🎉 Class added successfully!");
 
         // Update local state
         setRegisteredClasses(prev => [...prev, { code: classCode, title: classTitle }]);
@@ -79,6 +89,7 @@ export default function RegisterClassesPage() {
 
         Alert.alert("Success", `Class ${classCode} (${classTitle}) added to your profile.`);
     } catch (error) {
+      console.error("❌ Error adding class:", error);
         Alert.alert("Error", "Failed to add class.");
     }
   };

@@ -92,7 +92,6 @@ export default function ClassesScreen() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}
     >
-      {/* ✅ Dynamic text color for title */}
       <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Your Classes</Text>
 
       {classes.length > 0 ? (

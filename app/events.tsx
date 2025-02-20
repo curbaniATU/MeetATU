@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { collection, addDoc, updateDoc, doc, onSnapshot, arrayRemove } from 'firebase/firestore';
 import { db, auth } from '../comp/firebase';
 import BottomNavBar from '../comp/BottomNavBarForEvents';
+import useThemeStore from "@/comp/themeStore"; 
 
 // Define Interfaces
 interface Event {
@@ -24,6 +25,7 @@ interface User {
 
 const Events = () => {
   const router = useRouter();
+  const { darkMode } = useThemeStore(); 
   const currentUser = auth.currentUser?.uid; // Get logged-in user ID
 
   // **State for Event List**
@@ -150,39 +152,42 @@ const createEvent = async () => {
   // **Main Event List View**
   if (!creatingEvent) {
     return (
-      <View style={{ flex: 1, justifyContent: 'space-between' }}>
-        <SafeAreaView style={styles.container}>
-          <Text style={styles.title}>Your Study Groups</Text>
+      <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+      <SafeAreaView style={{ flex: 1 }}>
+      <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Your Study Groups</Text>
     
           {loading ? (
-            <Text>Loading events...</Text>
+            <Text style={[styles.loadingText, { color: darkMode ? "#cccccc" : "#666" }]}>Loading events...</Text>
           ) : events.length > 0 ? (
             <FlatList
               data={events}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <View style={styles.eventContainer}>
-                  <Text style={styles.eventTitle}>{item.name}</Text>
-                  <Text style={styles.eventDescription}>{item.description}</Text>
+                <View style={[styles.eventContainer, { backgroundColor: darkMode ? "#1E1E1E" : "#ffffff", borderColor: darkMode ? "#666" : "#ddd" },
+              ]}>
+                <Text style={[styles.eventTitle, { color: darkMode ? "#80cbc4" : "#007bff" }]}>{item.name}</Text>
+                <Text style={[styles.eventDescription, { color: darkMode ? "#cccccc" : "#555" }]}>{item.description}</Text>
                   <TouchableOpacity
                     onPress={() => leaveEvent(item.id)}
-                    style={styles.leaveButton}
-                  >
-                    <Text style={styles.leaveButtonText}>Leave Group</Text>
+                    style={[styles.leaveButton, { backgroundColor: darkMode ? "#d9534f" : "#d9534f" }]}
+                    >
+                  <Text style={styles.leaveButtonText}>Leave Group</Text>
                   </TouchableOpacity>
                 </View>
               )}
             />
           ) : (
-            <Text style={styles.noEventsText}>No events joined yet.</Text>
+            <Text style={[styles.noEventsText, { color: darkMode ? "#aaaaaa" : "#666" }]}>No events joined yet.</Text>
           )}
     
-          <TouchableOpacity style={styles.createButton} onPress={toggleView}>
-            <Text style={styles.createButtonText}>Create a study group</Text>
+          <TouchableOpacity style={[styles.createButton, { backgroundColor: darkMode ? "#28a745" : "#28a745" }]}
+          onPress={toggleView}>
+          <Text style={styles.createButtonText}>Create a study group</Text>
           </TouchableOpacity>
+          
     
-          <TouchableOpacity style={styles.backButton} onPress={() => router.push('/home')}>
-            <Text style={styles.backButtonText}>Go to homepage</Text>
+          <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}onPress={() => router.push("/home")}>            
+          <Text style={styles.backButtonText}>Go to homepage</Text>
           </TouchableOpacity>
         </SafeAreaView>
     
@@ -195,25 +200,24 @@ const createEvent = async () => {
 
   // **Event Creation View**
   return (
-    <View style={{ flex: 1, justifyContent: 'space-between' }}>
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Create Study Group Event</Text>
-
-      <TextInput style={styles.input} placeholder="Event Name" placeholderTextColor={styles.placeholderText.color} value={eventName} onChangeText={setEventName} />
-      <TextInput style={[styles.input, styles.multiline]} placeholder="Event Description (location, time, topic)" placeholderTextColor={styles.placeholderText.color} value={eventDescription} onChangeText={setEventDescription} multiline />
-
-      <Text style={styles.subtitle}>Invite Users</Text>
-      <TextInput style={styles.input} placeholder="Search users..." placeholderTextColor={styles.placeholderText.color} value={searchQuery} onChangeText={setSearchQuery} />
-
+    <View style={{ flex: 1, justifyContent: "space-between", backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
+  <SafeAreaView style={{ flex: 1, padding: 20 }}>
+    <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Create Study Group Event</Text>
+      <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Event Name" placeholderTextColor={darkMode ? "#aaaaaa" : "#555"} value={eventName}onChangeText={setEventName} />
+      <TextInput style={[ styles.input,styles.multiline,{backgroundColor: darkMode ? "#333" : "#ffffff",color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc", },]}placeholder="Event Description (location, time, topic)"placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={eventDescription} onChangeText={setEventDescription}multiline
+    />
+    <Text style={[styles.subtitle, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>Invite Users</Text>
+    <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Search users..." placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={searchQuery} onChangeText={setSearchQuery}
+    />
       {showDropdown && (
-        <View style={styles.dropdown}>
+      <View style={[styles.dropdown, { backgroundColor: darkMode ? "#222" : "#ffffff", borderColor: darkMode ? "#555" : "#ccc" }]}>
           <FlatList
             keyboardShouldPersistTaps="handled"
             data={users}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.dropdownItem} onPress={() => inviteUser(item)}>
-                <Text style={styles.dropdownItemText}>{item.name}</Text>
+              <Text style={[styles.dropdownItemText, { color: darkMode ? "#ffffff" : "#333" }]}>{item.name}</Text>
               </TouchableOpacity>
             )}
           />
@@ -221,12 +225,12 @@ const createEvent = async () => {
       
       )}
 
-      <TouchableOpacity style={styles.createButton} onPress={createEvent}>
-        <Text style={styles.createButtonText}>Create Event</Text>
+<TouchableOpacity style={[styles.createButton, { backgroundColor: darkMode ? "#28a745" : "#28a745" }]} onPress={createEvent}>
+<Text style={styles.createButtonText}>Create Event</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.backButton} onPress={toggleView}>
-        <Text style={styles.backButtonText}>Back to Events</Text>
+      <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]} onPress={toggleView}>
+      <Text style={styles.backButtonText}>Back to Events</Text>
       </TouchableOpacity>
     </SafeAreaView>
     
@@ -370,6 +374,10 @@ const styles = StyleSheet.create({
     },
     placeholderText: {
       color: '#c2c2c2',
+    },
+    loadingText: {
+      textAlign: "center",
+      fontSize: 18,
     },
   });
   

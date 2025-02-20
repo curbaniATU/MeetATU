@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient'; // Background gradient ef
 import { db } from "../comp/firebase"; // Import Firebase
 import { collection, query, orderBy, getDocs, updateDoc, doc} from "firebase/firestore";
 import BottomNavBar from '../comp/BottomNavBarForLeaderboard';
+import useThemeStore from "@/comp/themeStore"; 
 
 // Define Player interface (now stored inside `users` collection)
 interface Player {
@@ -13,6 +14,7 @@ interface Player {
 }
 
 const Leaderboard: React.FC = () => {
+  const { darkMode } = useThemeStore();
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
@@ -64,7 +66,7 @@ const Leaderboard: React.FC = () => {
 
 
   if (loading) {
-    return <Text style={styles.loadingText}>Loading leaderboard...</Text>;
+    return <Text style={[styles.loadingText, { color: darkMode ? "#ffffff" : "#333" }]}>Loading leaderboard...</Text>;
   }
 
   const renderMedal = (index: number) => {
@@ -75,10 +77,10 @@ const Leaderboard: React.FC = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      <SafeAreaView style={styles.container}>
-        <LinearGradient colors={['#24786D', '#3EA325']} style={styles.gradient}>
-          <Text style={styles.header}>Leaderboard</Text>
+    <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#ffffff" }]}>
+      <SafeAreaView style={styles.innerContainer}>
+      <LinearGradient colors={darkMode ? ["#111111", "#555555"]  : ["#24786D", "#3EA325"]}style={styles.gradient}>          
+      <Text style={[styles.header, { color: darkMode ? "#ffffff" : "#ffffff" }]}>Leaderboard</Text>
   
           {message && <Text style={styles.message}>{message}</Text>}
   
@@ -86,30 +88,30 @@ const Leaderboard: React.FC = () => {
             data={players}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              <View style={styles.playerRow}>
-                <Text style={styles.playerText}>
-                  {index + 1}. {item.username} - {item.points} pts
+              <View style={[styles.playerRow, { backgroundColor: darkMode ? "#222" : "#ffffff" }]}>
+                <Text style={[styles.playerText, { color: darkMode ? "#80cbc4" : "#333" }]}>
+                {index + 1}. {item.username} - {item.points} pts
                 </Text>
               </View>
             )}
           />
   
-          <Text style={styles.chartHeader}>How to Earn Points</Text>
-          <View style={styles.chartContainer}>
-            <ScrollView style={styles.scrollContainer}>
-              <Text style={styles.chartText}>- Message someone in a class: 5 points</Text>
-              <Text style={styles.chartText}>- Message 5 people in a class: 20 points</Text>
-              <Text style={styles.chartText}>- Make a study chat: 10 points</Text>
-              <Text style={styles.chartText}>- Attend a study group: 20 points</Text>
-              <Text style={styles.chartText}>- Join a study event: 15 points</Text>
-              <Text style={styles.chartText}>- Participate in a group chat: 5 points</Text>
-              <Text style={styles.chartText}>- Reply to a message: 3 points</Text>
-              <Text style={styles.chartText}>- 20 points automatically for creating a profile</Text>
-              <Text style={styles.chartText}>- Send a friend request: 5 points</Text>
-              <Text style={styles.chartText}>- Accept a friend request: 5 points</Text>
-              <Text style={styles.chartText}>- Log in daily: 5 points</Text>
-              <Text style={styles.chartText}>- Leaderboard climb: 20 points</Text>
-              <Text style={styles.chartText}>- Fill out major, bio, classification: 5 points</Text>
+  <Text style={[styles.chartHeader, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>How to Earn Points</Text>
+  <View style={[ styles.chartContainer,{ backgroundColor: darkMode ? "#1E1E1E" : "#ffffff", borderColor: darkMode ? "#555" : "#ddd" },]}>            
+    <ScrollView style={styles.scrollContainer}>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Message someone in a class: 5 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Message 5 people in a class: 20 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Make a study chat: 10 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Attend a study group: 20 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Join a study event: 15 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Participate in a group chat: 5 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Reply to a message: 3 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- 20 points automatically for creating a profile</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Send a friend request: 5 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Accept a friend request: 5 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Log in daily: 5 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Leaderboard climb: 20 points</Text>
+              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Fill out major, bio, classification: 5 points</Text>
             </ScrollView>
           </View>
         </LinearGradient>
@@ -184,6 +186,12 @@ const styles = StyleSheet.create({
   bottomSpacing: {
     height: 70, // Adjust the height as needed
   },
+  innerContainer: {
+    flex: 1,
+    margin: 20,
+    justifyContent: "center",
+  },
+
 });
 
 export default Leaderboard;

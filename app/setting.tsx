@@ -18,7 +18,7 @@ import { auth, db } from "../comp/firebase";
 import { signOut } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { useUserStore } from "../comp/userStore";
-import BottomNavBar from '../comp/BottomNavBarForEvents';
+import BottomNavBar from '../comp/BottomNavBarForSettings';
 
 const avatarOptions = [
     { filename: "black.png", source: require('../assets/Avatars/black.png') },

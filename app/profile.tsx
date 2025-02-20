@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../comp/firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
-import BottomNavBar from '../comp/BottomNavBarForEvents';
+import BottomNavBar from '../comp/BottomNavForProfile';
 import {
   View,
   Text,

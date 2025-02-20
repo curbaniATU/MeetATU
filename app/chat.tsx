@@ -7,6 +7,8 @@ import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firesto
 import { useEffect, useRef, useState } from "react";
 import { Button, Image, StyleSheet, Text, View, ScrollView, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { updateUserPoints } from "@/comp/points"; // Import the points utility
+
 
 export default function Chat() {
     const [chat, setChat] = useState<any[]>([]);
@@ -52,6 +54,9 @@ export default function Chat() {
 
                 }
             })
+
+            await updateUserPoints(5);   
+
         } catch(error) {
             console.log(error);
         }

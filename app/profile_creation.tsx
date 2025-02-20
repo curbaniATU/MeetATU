@@ -3,6 +3,8 @@ import { Text, SafeAreaView, TextInput, Button, StyleSheet } from 'react-native'
 import { Link, useRouter } from "expo-router";
 import { auth, db } from "../comp/firebase";
 import { setDoc, doc } from "firebase/firestore";
+import { updateUserPoints } from "@/comp/points";  // Adjust import path
+
 
 // Remove the header for this screen
 export const unstable_settings = {
@@ -77,7 +79,7 @@ export default function ProfileCreationScreen() {
                 style={styles.input}
                 onChangeText={text => setClassification(text)}
                 value={classification}
-                placeholder="Classification"
+                placeholder="Year of Graduation"
                 placeholderTextColor="#C5C5C5"
             />
 

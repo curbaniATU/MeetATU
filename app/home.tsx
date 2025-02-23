@@ -2,40 +2,42 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { SafeAreaView, Text, TouchableOpacity, StyleSheet, View, Platform, StatusBar,Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import useThemeStore from "@/comp/themeStore";
 
 export default function Home() {
     const router = useRouter();
+    const { darkMode } = useThemeStore(); 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#E3E4E4" }]}>
            {/* <Text style={styles.title}>Welcome </Text>}
              {/*logo placed here*/}
             <Image
-                source={require('../assets/images/logo.png')}
+                source={darkMode ? require("../assets/images/logo_darkM.png") :require('../assets/images/logo.png')}
                 style={styles.logo}/>
 
             <View style={styles.widgetContainer}>
                 {/*row 1*/}
                 <View style={styles.row}>
-                <TouchableOpacity style={styles.widget} onPress={() => router.push("/profile")}>
+                <TouchableOpacity style={[styles.widget, { backgroundColor: darkMode ? "#184F44" : "#24786D" }]} onPress={() => router.push("/profile")}>
                         <Ionicons name="person-circle-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Profile</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/chat_list")}>
+                    <TouchableOpacity style={[styles.widget, { backgroundColor: darkMode ? "#184F44" : "#24786D" }]} onPress={() => router.push("/chat_list")}>
                         <Ionicons name="chatbubbles-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Messages</Text>
                     </TouchableOpacity>
-
+                   
                 </View>
 
                 {/* Row 2 */}
                 <View style={styles.row}>
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/events")}>
+                    <TouchableOpacity style={[styles.widget, { backgroundColor: darkMode ? "#184F44" : "#24786D" }]}onPress={() => router.push("/events")}>
                         <Ionicons name="calendar-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Events</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/leaderboard")}>
+                    <TouchableOpacity style={[styles.widget, { backgroundColor: darkMode ? "#184F44" : "#24786D" }]}onPress={() => router.push("/leaderboard")}>
                         <Ionicons name="trophy-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Leaderboard</Text>
                     </TouchableOpacity>
@@ -44,17 +46,18 @@ export default function Home() {
                 {/*row 3*/}
                 <View style={styles.row}>
                 
-                <TouchableOpacity style={styles.widget} onPress={() => router.push("/classPage")}>
+                <TouchableOpacity style={[styles.widget, { backgroundColor: darkMode ? "#184F44" : "#24786D" }]} onPress={() => router.push("/classPage")}>
                         <Ionicons name="school-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Classes</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.widget} onPress={() => router.push("/setting")}>
+                    <TouchableOpacity style={[styles.widget, { backgroundColor: darkMode ? "#184F44" : "#24786D" }]} onPress={() => router.push("/setting")}>
                         <Ionicons name="settings-outline" size={40} color="white" />
                         <Text style={styles.widgetText}>Settings</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
+        
     );
 }
 

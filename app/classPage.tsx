@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, FlatList, StyleSheet, View, Platform, StatusBar } from "react-native";
+import { SafeAreaView, Text, FlatList, StyleSheet, View, Platform, StatusBar, TouchableOpacity } from "react-native";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../comp/firebase";
 import BottomNavBar from "../comp/BottomNavForClasses";
 import useThemeStore from "@/comp/themeStore"; 
+import { useRouter } from "expo-router"; // ✅ Import useRouter
 
 interface ClassData {
   Instructor: string;
   id: string;
   code: string;
   title: string;
-  students: string[]; // Add students array to store enrolled users
+  students: string[];
 }
 
 export default function ClassesScreen() {
@@ -18,8 +19,8 @@ export default function ClassesScreen() {
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [userClasses, setUserClasses] = useState<string[]>([]);
   const currentUser = auth.currentUser?.uid;
+  const router = useRouter(); // ✅ Initialize router
 
-  // **Fetch User's Enrolled Classes**
   useEffect(() => {
     const fetchUserClasses = async () => {
       if (!currentUser) return;
@@ -41,25 +42,22 @@ export default function ClassesScreen() {
     fetchUserClasses();
   }, [currentUser]);
 
-  // **Fetch Classes and Students**
   useEffect(() => {
     const fetchClasses = async () => {
       try {
         const classCollection = await getDocs(collection(db, "classes"));
         const allClasses: ClassData[] = classCollection.docs.map((doc) => ({
           id: doc.id,
-          code: doc.id, // Class ID is the code (e.g., "20015")
-          title: doc.data().Title, // Use "Title" field from database
+          code: doc.id, 
+          title: doc.data().Title, 
           Instructor: doc.data().Instructor,
-          students: [], // Will be populated later
+          students: [],
         }));
 
-        // 🔥 Filter classes based on user's enrolled class codes
         const filteredClasses = allClasses.filter((classItem) =>
           userClasses.includes(classItem.code)
         );
 
-        // Fetch users to determine which students are in each class
         const usersCollection = await getDocs(collection(db, "users"));
         const users = usersCollection.docs.map((doc) => {
           const userData = doc.data();
@@ -72,7 +70,6 @@ export default function ClassesScreen() {
           };
         });
 
-        // 🔥 Assign students to classes
         filteredClasses.forEach((classItem) => {
           classItem.students = users
             .filter((user) => user.enrolledClasses.includes(classItem.code))
@@ -105,7 +102,6 @@ export default function ClassesScreen() {
                 { backgroundColor: darkMode ? "#1E1E1E" : "#ffffff" },
               ]}
             >
-              {/* ✅ Apply dynamic text colors */}
               <Text style={[styles.classTitle, { color: darkMode ? "#80cbc4" : "#007bff" }]}>
                 {item.title} ({item.code})
               </Text>
@@ -135,6 +131,11 @@ export default function ClassesScreen() {
           You are not enrolled in any classes.
         </Text>
       )}
+
+      {/* ✅ Add Class Button (Fixed at Bottom Center) */}
+      <TouchableOpacity style={styles.addButton} onPress={() => router.push("/crn")}>
+        <Text style={styles.addButtonText}>Add Class</Text>
+      </TouchableOpacity>
 
       <BottomNavBar />
     </SafeAreaView>
@@ -181,4 +182,25 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
   },
+  addButton: {
+    position: "absolute",
+    bottom: 150, // Adjust to keep above BottomNavBar
+    alignSelf: "center",
+    backgroundColor: '#007b5e',
+    paddingVertical: 12,
+    paddingHorizontal: 45,
+    borderRadius: 25,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  addButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
+

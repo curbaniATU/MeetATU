@@ -55,7 +55,7 @@ export default function ChatList() {
             {/* Header with Messages Title and Trophy Button */}
             <View style={styles.header}>
                 <Text style={styles.headerText}>Messages</Text>
-                <TouchableOpacity onPress={() => router.push("/chat")} style={styles.trophyButton}>
+                <TouchableOpacity onPress={() => router.push("/createChat")} style={styles.trophyButton}>
                     <Ionicons name="create-outline" size={40} color="white" />
                 </TouchableOpacity>
             </View>

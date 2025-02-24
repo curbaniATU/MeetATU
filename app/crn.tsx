@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Alert, ActivityIndicator } from "react-native";
 import {
   SafeAreaView, Text, TextInput, Image,
-  TouchableOpacity, FlatList, StyleSheet, View
+  TouchableOpacity, FlatList, StyleSheet, View, Switch
 } from "react-native";
 import { useRouter } from "expo-router";
-import { db, auth } from "../comp/firebase"; // Ensure correct Firebase instance
+import { db, auth } from "../comp/firebase"; 
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import BottomNavBar from '../comp/BottomNavBarForEvents';
 import useThemeStore from "@/comp/themeStore";  
@@ -16,52 +16,45 @@ interface ClassItem {
 }
 
 export default function RegisterClassesPage() {
-  const { darkMode } = useThemeStore();  
+  const { darkMode } = useThemeStore();
   const [classCode, setClassCode] = useState("");
   const [registeredClasses, setRegisteredClasses] = useState<ClassItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
 
   const handleAddClass = async () => {
     if (!classCode.trim()) {
         Alert.alert("Error", "Please enter a class code.");
         return;
     }
+    if (!isChecked) {
+        Alert.alert("Error", "You must agree to the consent before proceeding.");
+        return;
+    }
 
     try {
         const user = auth.currentUser;
         if (!user) {
-            console.log("❌ No user is logged in.");
             Alert.alert("Error", "No user logged in.");
             return;
         }
-        console.log(`✅ User found: ${user.uid}`);
 
-        // Check if class exists in Firestore
         const classRef = doc(db, "classes", classCode);
         const classSnap = await getDoc(classRef);
 
         if (!classSnap.exists()) {
-            console.log(`❌ Class ${classCode} not found in Firestore.`);
             Alert.alert("Error", `Class ${classCode} not found.`);
             return;
         }
 
         const classData = classSnap.data();
-        console.log(`📄 Retrieved class data:`, classData);
-
-        const classTitle = classData?.Title || "Unknown Title"; // Ensure correct field mapping
-        console.log(`📝 Class title extracted: ${classTitle}`);
+        const classTitle = classData?.Title || "Unknown Title";
 
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
         if (!userSnap.exists()) {
-            console.log("❌ User document not found in Firestore.");
             Alert.alert("Error", "User profile not found.");
             return;
         }
@@ -69,27 +62,21 @@ export default function RegisterClassesPage() {
         const userData = userSnap.data();
         const existingClasses = userData.classes || [];
 
-        // Prevent duplicate class registrations
-        console.log(`⚠️ Class ${classCode} already registered.`);
         if (existingClasses.some((c: ClassItem) => c.code === classCode)) {
             Alert.alert("Warning", "You are already registered for this class.");
             return;
         }
-        console.log(`✅ Adding class ${classCode} to user profile...`);
 
-        // Add class to user's profile
         await updateDoc(userRef, {
             classes: arrayUnion({ code: classCode, title: classTitle }),
         });
-        console.log("🎉 Class added successfully!");
 
-        // Update local state
         setRegisteredClasses(prev => [...prev, { code: classCode, title: classTitle }]);
         setClassCode("");
+        setIsChecked(false);
 
         Alert.alert("Success", `Class ${classCode} (${classTitle}) added to your profile.`);
     } catch (error) {
-      console.error("❌ Error adding class:", error);
         Alert.alert("Error", "Failed to add class.");
     }
   };
@@ -97,8 +84,6 @@ export default function RegisterClassesPage() {
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
       <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
-        
-       
         <Text style={[styles.heading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>Register for Classes</Text>
         <Text style={[styles.subheading, { color: darkMode ? "#cccccc" : "#007b5e" }]}>It’s time to add your classes!</Text>
         
@@ -110,11 +95,27 @@ export default function RegisterClassesPage() {
           onChangeText={setClassCode}
         />
 
-        <TouchableOpacity style={[styles.enterButton, { backgroundColor: darkMode ? "#007b5e" : "#007b5e" }]} onPress={handleAddClass}>
+        {/* ✅ Switch for consent */}
+        <View style={styles.checkboxContainer}>
+          <Switch
+            value={isChecked}
+            onValueChange={setIsChecked}
+            trackColor={{ false: "#ccc", true: "#007b5e" }}
+            thumbColor={isChecked ? "#ffffff" : "#666"}
+          />
+          <Text style={[styles.checkboxText, { color: darkMode ? "#aaaaaa" : "#007b5e" }]}>
+            By submitting, you consent to sharing your class enrollment status with students in your same class.
+          </Text>
+        </View>
+
+        {/* Submit Button - Disabled unless checkbox is checked */}
+        <TouchableOpacity
+          style={[styles.enterButton, { backgroundColor: isChecked ? "#007b5e" : "#aaa" }]}
+          onPress={handleAddClass}
+          disabled={!isChecked}
+        >
           <Text style={styles.enterButtonText}>Submit</Text>
         </TouchableOpacity>
-
-        <Text style={[styles.subheading, { color: darkMode ? "#aaaaaa" : "#007b5e" }]}>By submitting, you consent to sharing your class enrollment status with students in your same class.</Text>
 
         {isLoading ? (
           <ActivityIndicator size="large" color={darkMode ? "#ffffff" : "#007b5e"} />
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 16,
     marginTop: 8,
+    textAlign: "center",
   },
   input: {
     width: "95%",
@@ -159,6 +161,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 50,
     marginBottom: 16,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "90%",
+    marginVertical: 10,
+    paddingHorizontal: 10, 
+  },
+  checkboxText: {
+    fontSize: 14,
+    marginLeft: 8,
+    flex: 1,
   },
   enterButton: {
     padding: 10,

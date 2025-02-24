@@ -5,6 +5,7 @@ import { db } from "../comp/firebase"; // Import Firebase
 import { collection, query, orderBy, getDocs, updateDoc, doc} from "firebase/firestore";
 import BottomNavBar from '../comp/BottomNavBarForLeaderboard';
 import useThemeStore from "@/comp/themeStore"; 
+import { updateUserPoints } from "@/comp/points"; 
 
 // Define Player interface (now stored inside `users` collection)
 interface Player {

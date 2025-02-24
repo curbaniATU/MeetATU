@@ -257,9 +257,9 @@ export default function Profile() {
       </TouchableOpacity>
       </View>
 
-      <BottomNavBar />
+      
       </View>
-    
+      <BottomNavBar />
     </View>
   );
 }

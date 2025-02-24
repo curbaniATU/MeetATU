@@ -152,8 +152,11 @@ const createEvent = async () => {
   // **Main Event List View**
   if (!creatingEvent) {
     return (
+      <SafeAreaView
+      style={[styles.container, { flex: 1, padding: 20, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+
       <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, justifyContent: "space-between", backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
       <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Your Study Groups</Text>
     
           {loading ? (
@@ -185,32 +188,26 @@ const createEvent = async () => {
           <Text style={styles.createButtonText}>Create a study group</Text>
           </TouchableOpacity>
           
-    
-          <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}onPress={() => router.push("/home")}>            
-          <Text style={styles.backButtonText}>Go to homepage</Text>
-          </TouchableOpacity>
         </SafeAreaView>
-    
-        {/* ✅ Navigation bar stays at the bottom */}
-        <BottomNavBar />
+        
       </View>
+      <BottomNavBar />
+      </SafeAreaView>
+      
     );
-    
   }
 
   // **Event Creation View**
   return (
     <View style={{ flex: 1, justifyContent: "space-between", backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
-  <SafeAreaView style={{ flex: 1, padding: 20 }}>
-    <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Create Study Group Event</Text>
-      <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Event Name" placeholderTextColor={darkMode ? "#aaaaaa" : "#555"} value={eventName}onChangeText={setEventName} />
-      <TextInput style={[ styles.input,styles.multiline,{backgroundColor: darkMode ? "#333" : "#ffffff",color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc", },]}placeholder="Event Description (location, time, topic)"placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={eventDescription} onChangeText={setEventDescription}multiline
-    />
-    <Text style={[styles.subtitle, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>Invite Users</Text>
-    <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Search users..." placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={searchQuery} onChangeText={setSearchQuery}
-    />
-      {showDropdown && (
-      <View style={[styles.dropdown, { backgroundColor: darkMode ? "#222" : "#ffffff", borderColor: darkMode ? "#555" : "#ccc" }]}>
+      <SafeAreaView style={{ flex: 1, padding: 20 }}>
+      <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Create Study Group Event</Text>
+        <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Event Name" placeholderTextColor={darkMode ? "#aaaaaa" : "#555"} value={eventName}onChangeText={setEventName} />
+        <TextInput style={[ styles.input,styles.multiline,{backgroundColor: darkMode ? "#333" : "#ffffff",color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc", },]}placeholder="Event Description (location, time, topic)"placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={eventDescription} onChangeText={setEventDescription}multiline/>
+        <Text style={[styles.subtitle, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>Invite Users</Text>
+        <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Search users..." placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={searchQuery} onChangeText={setSearchQuery}/>
+          {showDropdown && (
+          <View style={[styles.dropdown, { backgroundColor: darkMode ? "#222" : "#ffffff", borderColor: darkMode ? "#555" : "#ccc" }]}>
           <FlatList
             keyboardShouldPersistTaps="handled"
             data={users}
@@ -222,19 +219,18 @@ const createEvent = async () => {
             )}
           />
         </View>
-      
       )}
 
-<TouchableOpacity style={[styles.createButton, { backgroundColor: darkMode ? "#28a745" : "#28a745" }]} onPress={createEvent}>
-<Text style={styles.createButtonText}>Create Event</Text>
+      <TouchableOpacity style={[styles.createButton, { backgroundColor: darkMode ? "#28a745" : "#28a745" }]} onPress={createEvent}>
+        <Text style={styles.createButtonText}>Create Event</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]} onPress={toggleView}>
-      <Text style={styles.backButtonText}>Back to Events</Text>
+        <Text style={styles.backButtonText}>Back to Events</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+      <BottomNavBar />
+      </SafeAreaView>
     
-    <BottomNavBar />
     </View>
   );
 };
@@ -329,6 +325,7 @@ const styles = StyleSheet.create({
       marginVertical: 10,
       marginLeft: 18,
       marginRight: 18,
+      marginBottom: 40,
     },
     createButtonText: {
       color: '#fff',
@@ -359,8 +356,8 @@ const styles = StyleSheet.create({
       paddingVertical: 10,
       borderRadius: 20,
       alignItems: 'center',
-      marginLeft: 140,
-      marginRight: 140,
+      marginLeft: 120,
+      marginRight: 120,
     },
     leaveButtonText: {
       color: '#fff',

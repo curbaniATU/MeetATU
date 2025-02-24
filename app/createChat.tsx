@@ -14,6 +14,7 @@ import { collection, addDoc, onSnapshot, updateDoc, setDoc, serverTimestamp, doc
 import { db, auth } from "@/comp/firebase";
 import { useUserStore } from "@/comp/userStore";
 import { useChatStore } from "@/comp/chatStore";
+import useThemeStore from "@/comp/themeStore";
 
 interface User {
     id: string;
@@ -25,6 +26,7 @@ const CreateChat = () => {
     const router = useRouter();
     const { currentUser } = useUserStore();
     const { fetchChatInfo } = useChatStore();
+    const { darkMode } = useThemeStore();
 
     // Search and User List
     const [recipient, setRecipient ] = useState();
@@ -114,12 +116,19 @@ const CreateChat = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Start a New Chat</Text>
+        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#E3E4E4" }]}>
+            <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#000000" }]}>Start a New Chat</Text>
 
             <TextInput
-                style={styles.input}
-                placeholder="Search users..."
+                style={[
+                    styles.input,
+                    {
+                        backgroundColor: darkMode ? "#333" : "#ffffff",
+                        color: darkMode ? "#ffffff" : "#000000",
+                        borderColor: darkMode ? "#888" : "#ccc",
+                    },
+                ]}
+                placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
             />
@@ -129,15 +138,15 @@ const CreateChat = () => {
                     data={users}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.userItem} onPress={() => startChat(item)}>
-                            <Text style={styles.userText}>{item.name}</Text>
-                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.userItem, { backgroundColor: darkMode ? "#1E1E1E" : "#ffffff" }]} onPress={() => startChat(item)}>
+                        <Text style={[styles.userText, { color: darkMode ? "#ffffff" : "#000000" }]}>{item.name}</Text>
+                    </TouchableOpacity>
                     )}
                 />
             )}
 
-            <TouchableOpacity style={styles.backButton} onPress={() => router.push("/chat_list")}>
-                <Text style={styles.backButtonText}>Back to Messages</Text>
+            <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]} onPress={() => router.push("/chat_list")}>
+            <Text style={styles.backButtonText}>Back to Messages</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

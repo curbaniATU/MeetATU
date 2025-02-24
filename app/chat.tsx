@@ -8,9 +8,11 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Image, StyleSheet, Text, View, ScrollView, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { updateUserPoints } from "@/comp/points"; // Import the points utility
+import useThemeStore from "@/comp/themeStore";
 
 
 export default function Chat() {
+    const { darkMode } = useThemeStore(); 
     const [chat, setChat] = useState<any[]>([]);
     const [open, setOpen] = useState(false);
     const [text, setText] = useState("");
@@ -87,29 +89,44 @@ export default function Chat() {
     
 
     return(
-        <SafeAreaView style={styles.container}>
-            <View style={styles.userInfo}>
+        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#ffffff" }]}>
+            <View style={[styles.userInfo, { borderColor: darkMode ? "#444" : "#24786D" }]}>
                 <Image source={avatar} style={styles.avatar} />
-                <Text style={styles.username}>{user?.username}</Text>
+                <Text style={[styles.username, { color: darkMode ? "#ffffff" : "#000000" }]}>{user?.username}</Text>
             </View>
             <ScrollView style={styles.chatView} ref={scrollViewRef}>
                 {chat.map((message) => (
-                    <View style={message.senderId === currentUser.id ? styles.messageOwn : styles.message} key={message?.createdAt}>
-                        <Text style={message.senderId === currentUser.id ? styles.messageOwnText : styles.messageText} >{message.text}</Text>
+                    <View
+                        style={[
+                            message.senderId === currentUser.id ? styles.messageOwn : styles.message,
+                            { backgroundColor: message.senderId === currentUser.id ? (darkMode ? "#3EA325" : "#24786D") : darkMode ? "#222" : "#e5e3dc" },
+                        ]}
+                        key={message?.createdAt}
+                    >
+                        <Text style={{ color: message.senderId === currentUser.id ? "#ffffff" : darkMode ? "#ffffff" : "#000000" }}>
+                            {message.text}
+                        </Text>
                     </View>
                 ))}
             </ScrollView>
-            <View style={styles.textArea}>
-                <TextInput 
-                style={styles.input} 
-                onChangeText={text => setText(text)} 
-                placeholder="Type message here..." 
-                placeholderTextColor="C5C5C5" />
-                <Button title="Send" onPress={handleSend} />
-
+            <View style={[styles.textArea, { borderColor: darkMode ? "#444" : "#24786D" }]}>
+                <TextInput
+                    style={[
+                        styles.input,
+                        {
+                            backgroundColor: darkMode ? "#333" : "#e5e3dc",
+                            color: darkMode ? "#ffffff" : "#000000",
+                        },
+                    ]}
+                    onChangeText={setText}
+                    placeholder="Type message here..."
+                    placeholderTextColor={darkMode ? "#aaaaaa" : "#C5C5C5"}
+                    value={text}
+                />
+                <Button title="Send" onPress={handleSend} color={darkMode ? "#80cbc4" : "#24786D"} />
             </View>
         </SafeAreaView>
-    )
+    );
     
 }
 

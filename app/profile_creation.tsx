@@ -4,6 +4,7 @@ import { Link, useRouter } from "expo-router";
 import { auth, db } from "../comp/firebase";
 import { setDoc, doc } from "firebase/firestore";
 import { updateUserPoints } from "@/comp/points";  // Adjust import path
+import useThemeStore from "@/comp/themeStore"; 
 
 
 // Remove the header for this screen
@@ -13,6 +14,7 @@ export const unstable_settings = {
 
 export default function ProfileCreationScreen() {
     const router = useRouter();
+    const { darkMode } = useThemeStore();
 
     const [username, setUsername] = useState('');
     const [bio, setBio] = useState(''); 
@@ -48,45 +50,73 @@ export default function ProfileCreationScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.header}>Create Your Profile!</Text>
+        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#E3E4E4" }]}>
+            <Text style={[styles.header, { color: darkMode ? "#ffffff" : "#000000" }]}>Create Your Profile!</Text>
 
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                      backgroundColor: darkMode ? "#333" : "#f9f9f9",
+                      color: darkMode ? "#ffffff" : "#000000",
+                      borderBottomColor: darkMode ? "#666" : "#C5C5C5",
+                    },
+                  ]}
                 onChangeText={text => setUsername(text)}
                 value={username}
                 placeholder="Enter name: "
-                placeholderTextColor="#C5C5C5"
-            />
+                placeholderTextColor={darkMode ? "#aaaaaa" : "#C5C5C5"}
+                />
 
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                      backgroundColor: darkMode ? "#333" : "#f9f9f9",
+                      color: darkMode ? "#ffffff" : "#000000",
+                      borderBottomColor: darkMode ? "#666" : "#C5C5C5",
+                    },
+                  ]}
                 onChangeText={text => setBio(text)}
                 value={bio}
                 placeholder="Bio"
-                placeholderTextColor="#C5C5C5"
-            />
+                placeholderTextColor={darkMode ? "#aaaaaa" : "#C5C5C5"}
+                />
 
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                      backgroundColor: darkMode ? "#333" : "#f9f9f9",
+                      color: darkMode ? "#ffffff" : "#000000",
+                      borderBottomColor: darkMode ? "#666" : "#C5C5C5",
+                    },
+                  ]}
                 onChangeText={text => setMajor(text)}
                 value={major}
                 placeholder="Major"
-                placeholderTextColor="#C5C5C5"
-            />
+                placeholderTextColor={darkMode ? "#aaaaaa" : "#C5C5C5"}
+                />
 
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                      backgroundColor: darkMode ? "#333" : "#f9f9f9",
+                      color: darkMode ? "#ffffff" : "#000000",
+                      borderBottomColor: darkMode ? "#666" : "#C5C5C5",
+                    },
+                  ]}
                 onChangeText={text => setClassification(text)}
                 value={classification}
                 placeholder="Year of Graduation"
-                placeholderTextColor="#C5C5C5"
-            />
+                placeholderTextColor={darkMode ? "#aaaaaa" : "#C5C5C5"}
+                />
 
             <Button title="Complete Profile" onPress={handleProfileCompletion} />
 
-            {message && <Text style={styles.message}>{message}</Text>}
-        </SafeAreaView>
+            {message && <Text style={[styles.message, { color: darkMode ? "#80cbc4" : "green" }]}>{message}</Text>}
+            </SafeAreaView>
     );
 }
 

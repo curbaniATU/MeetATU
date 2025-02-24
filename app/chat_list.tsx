@@ -9,9 +9,11 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomNavBar from "../comp/BottomNavForMessages";
 import { Ionicons } from "@expo/vector-icons";
+import useThemeStore from "@/comp/themeStore"; 
 
 export default function ChatList() {
     const router = useRouter();
+    const { darkMode } = useThemeStore();
     const [avatar, setAvatar] = useState<{ [key: string]: any }>({});
     const [chats, setChats] = useState<any[]>([]);
     const { currentUser } = useUserStore();
@@ -51,20 +53,20 @@ export default function ChatList() {
     }, [chats]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#ffffff" }]}>
             {/* Header with Messages Title and Trophy Button */}
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Messages</Text>
-                <TouchableOpacity onPress={() => router.push("/createChat")} style={styles.trophyButton}>
-                    <Ionicons name="create-outline" size={40} color="white" />
+            <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+                <Text style={[styles.headerText, { color: darkMode ? "#ffffff" : "#ffffff" }]}>Messages</Text>
+                <TouchableOpacity onPress={() => router.push("/createChat")} style={styles.createButton}>
+                    <Ionicons name="create-outline" size={40} color={darkMode ? "#80cbc4" : "white"} />
                 </TouchableOpacity>
             </View>
 
             {/* Chat List */}
             {chats.map((chat) => (
                 <TouchableOpacity
-                    style={styles.chatItem}
-                    key={chat.chatId}
+                style={[styles.chatItem, { backgroundColor: darkMode ? "#1E1E1E" : "white", borderColor: darkMode ? "#444" : "#24786D" }]}
+                key={chat.chatId}
                     onPress={() => {
                         fetchChatInfo(chat.chatId, chat.user);
                         router.push("/chat");
@@ -74,13 +76,13 @@ export default function ChatList() {
                         {avatar[chat.user.id] ? (
                             <Image source={avatar[chat.user.id]} style={styles.avatar} />
                         ) : (
-                            <Text>Loading...</Text>
+                            <Text style={{ color: darkMode ? "#ffffff" : "#000000" }}>Loading...</Text>
                         )}
                     </View>
                     <View style={styles.chatText}>
-                        <Text style={styles.chatUser}>{chat.user.username}</Text>
-                        <Text style={styles.lastMessage}>{chat.lastMessage}</Text>
-                    </View>
+                        <Text style={[styles.chatUser, { color: darkMode ? "#ffffff" : "#000000" }]}>{chat.user.username}</Text>
+                        <Text style={[styles.lastMessage, { color: darkMode ? "#aaaaaa" : "#949494" }]}>{chat.lastMessage}</Text>
+                   </View>
                 </TouchableOpacity>
             ))}
 
@@ -136,6 +138,10 @@ const styles = StyleSheet.create({
     },
     lastMessage: {
         color: "#949494",
+    },
+    createButton: {
+        position: "absolute",
+        right: 15,
     },
 });
 

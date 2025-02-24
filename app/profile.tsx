@@ -4,6 +4,8 @@ import { auth, db } from "../comp/firebase";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../comp/BottomNavForProfile';
+import useThemeStore from "@/comp/themeStore"; 
+
 import {
   View,
   Text,
@@ -28,6 +30,7 @@ const avatarOptions = [
 ];
 
 export default function Profile() {
+  const { darkMode } = useThemeStore();
   const [userDetails, setUserDetails] = useState<any | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [bio, setBio] = useState('');
@@ -151,13 +154,14 @@ export default function Profile() {
   };
 
   if (!userDetails) {
-    return <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />;
+    return <ActivityIndicator style={styles.loading} size="large" color={darkMode ? "#ffffff" : "#0000ff"} />;
   }
 
   return (
     
     <View style={{ flex: 1, justifyContent: 'space-between' }}>
-    <View style={styles.container}>
+      
+      <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
 
       {/* Settings Button (Fixed Top Right) 
       <TouchableOpacity style={styles.settingsButton} onPress={() => router.push("/setting")}>
@@ -166,14 +170,14 @@ export default function Profile() {
 
       {/* Header with name at the top */}
       <View style={styles.header}>
-      <Text style={styles.nameText}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>
+      <Text style={[styles.nameText, { color: darkMode ? "#ffffff" : "#333" }]}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>
 
       <View style={styles.avatarSection}>
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.avatarContainer}>
           <Image source={selectedAvatar.source} style={styles.profileImage} />
           <Image source={require('../assets/images/edit.png')} style={styles.editIcon} />
         </TouchableOpacity>
-        <Text style={styles.avatarEditText}>Tap to change avatar</Text>
+        <Text style={[styles.avatarEditText, { color: darkMode ? "#aaaaaa" : "#555" }]}>Tap to change avatar</Text>
         </View>
       </View>
 
@@ -202,41 +206,45 @@ export default function Profile() {
         </View>
       </Modal>
 
-      <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Bio:</Text>
-        {isEditing ? (
+      <View style={[styles.detailsContainer, { backgroundColor: darkMode ? "#1E1E1E" : "#ffffff" }]}>
+      <Text style={[styles.label, { color: darkMode ? "#ffffff" : "#333" }]}>Bio:</Text>
+      {isEditing ? (
           <TextInput 
             style={styles.input}
             value={bio}
             onChangeText={setBio}
             placeholder="Enter your bio"
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
           />
         ) : (
-          <Text style={styles.text}>{bio || "No bio provided"}</Text>
+          <Text style={[styles.text, { color: darkMode ? "#cccccc" : "#555" }]}>{bio || "No bio provided"}</Text>
         )}
 
-        <Text style={styles.label}>Major:</Text>
+        <Text style={[styles.label, { color: darkMode ? "#ffffff" : "#333" }]}>Major:</Text>
         {isEditing ? (
           <TextInput 
             style={styles.input}
             value={major}
             onChangeText={setMajor}
             placeholder="Enter your major"
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
           />
         ) : (
-          <Text style={styles.text}>{major}</Text>
+          <Text style={[styles.text, { color: darkMode ? "#cccccc" : "#555" }]}>{major}</Text>
         )}
 
-        <Text style={styles.label}>Graduation Year:</Text>
+        <Text style={[styles.label, { color: darkMode ? "#ffffff" : "#333" }]}>Graduation Year:</Text>
         {isEditing ? (
           <TextInput 
             style={styles.input}
             value={classification}
             onChangeText={setClassification}
             placeholder="Enter your classification"
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
+
           />
         ) : (
-          <Text style={styles.text}>{classification}</Text>
+          <Text style={[styles.text, { color: darkMode ? "#cccccc" : "#555" }]}>{classification}</Text>
         )}
 
         {/* New Points section */}
@@ -247,9 +255,9 @@ export default function Profile() {
       {/* Side-by-side buttons */}
 
       <View style={styles.buttonRow}>
-      <TouchableOpacity style={styles.sideButton} onPress={handleEditProfile}>
-          <Text style={styles.buttonText1}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={[styles.sideButton, { backgroundColor: darkMode ? "#3EA325" : "#24786D" }]} onPress={handleEditProfile}>
+      <Text style={styles.buttonText}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.sideButton2} onPress={async () => {
         await auth.signOut();
         router.replace("/login"); }}>
@@ -354,6 +362,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     marginTop: 30 
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   buttonText1: { 
     color: '#fff', 

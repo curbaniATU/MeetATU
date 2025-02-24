@@ -17,7 +17,7 @@ import { auth, db } from "../comp/firebase";
 import { signOut } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { useUserStore } from "../comp/userStore";
-import BottomNavBarSettings from '../comp/BottomNavBarForSettings';
+import BottomNavBar from '../comp/BottomNavBarForSettings';
 
 import useThemeStore from "@/comp/themeStore";  
 
@@ -138,7 +138,7 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
 
             </SafeAreaView>
-            <BottomNavBar />
+            <BottomNavBar/>
         </View>
     );
 }

@@ -1,14 +1,14 @@
 import { db } from "@/comp/firebase";
 import { useUserStore } from "@/comp/userStore";
-import { useAvatar } from "@/comp/avatarFetch"
-import { useChatStore } from "@/comp/chatStore"
+import { useAvatar } from "@/comp/avatarFetch";
+import { useChatStore } from "@/comp/chatStore";
 import { useRouter } from "expo-router";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BottomNavBar from '../comp/BottomNavForMessages';
-
+import BottomNavBar from "../comp/BottomNavForMessages";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ChatList() {
     const router = useRouter();
@@ -17,38 +17,27 @@ export default function ChatList() {
     const { currentUser } = useUserStore();
     const { fetchChatInfo } = useChatStore();
 
-
-    const handleSelect = async (chat: {chatId: string, user: string}) => {
-        fetchChatInfo(chat.chatId, chat.user)
-        router.push("/chat")
-    }
     useEffect(() => {
         const chatListFetch = onSnapshot(doc(db, "chats", currentUser.id), async (response) => {
             const data = response.data()?.chats || [];
-            
-            const promises = data.map(async (item: {receiverId: string; }) => {
+
+            const promises = data.map(async (item: { receiverId: string }) => {
                 const userDocRef = doc(db, "users", item.receiverId);
                 const userDocSnap = await getDoc(userDocRef);
 
-                console.log(item.receiverId)
                 const user = userDocSnap.data();
-
                 return { ...item, user };
             });
 
             const chatData = await Promise.all(promises);
-
-            setChats(chatData.sort((a,b) => b.updateAt - a.updateAt));
+            setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
         });
-        
+
         return () => {
             chatListFetch();
-        }
-        
+        };
     }, [currentUser.id]);
 
-
-    // Fetches User Avatars
     useEffect(() => {
         const avatarMap: { [key: string]: any } = {};
 
@@ -59,66 +48,94 @@ export default function ChatList() {
         }
 
         setAvatar(avatarMap);
-        console.log(avatar)
     }, [chats]);
 
     return (
         <SafeAreaView style={styles.container}>
-            {chats.map((chat) => {
-                console.log(avatar[chat.user.id]);
-                return (
-                    <TouchableOpacity style={styles.chatItem} key={chat.chatId} onPress={() => handleSelect(chat)}>
-                        <View>
-                            {avatar[chat.user.id] ? (
-                                <Image source={avatar[chat.user.id]} style={styles.avatar} />
-                            ) : (
-                                <Text>Loading...</Text>
-                            )}
-                        </View>
-                        <View style={styles.chatText}>
-                            <Text style={styles.chatUser}>{chat.user.username}</Text>
-                            <Text style={styles.lastMessage}>{chat.lastMessage}</Text>
-                        </View>
-                    </TouchableOpacity>
-                );
-            })}
-             <BottomNavBar />
+            {/* Header with Messages Title and Trophy Button */}
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Messages</Text>
+                <TouchableOpacity onPress={() => router.push("/chat")} style={styles.trophyButton}>
+                    <Ionicons name="create-outline" size={40} color="white" />
+                </TouchableOpacity>
+            </View>
+
+            {/* Chat List */}
+            {chats.map((chat) => (
+                <TouchableOpacity
+                    style={styles.chatItem}
+                    key={chat.chatId}
+                    onPress={() => {
+                        fetchChatInfo(chat.chatId, chat.user);
+                        router.push("/chat");
+                    }}
+                >
+                    <View>
+                        {avatar[chat.user.id] ? (
+                            <Image source={avatar[chat.user.id]} style={styles.avatar} />
+                        ) : (
+                            <Text>Loading...</Text>
+                        )}
+                    </View>
+                    <View style={styles.chatText}>
+                        <Text style={styles.chatUser}>{chat.user.username}</Text>
+                        <Text style={styles.lastMessage}>{chat.lastMessage}</Text>
+                    </View>
+                </TouchableOpacity>
+            ))}
+
+            <BottomNavBar />
         </SafeAreaView>
-    )
-
+    );
 }
-
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: "#E3E4E4",
+    },
+    header: {
+        backgroundColor: "#24786D",
+        padding: 15,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    headerText: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "white",
+        textAlign: "center",
+        flex: 1,
+    },
+    trophyButton: {
+        position: "absolute",
+        right: 15,
     },
     chatItem: {
-        borderTopWidth: 1,
         borderBottomWidth: 1,
-        padding: 1,
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        borderColor: '#24786D'
+        padding: 10,
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        borderColor: "#24786D",
+        backgroundColor: "white",
     },
     chatUser: {
-        marginTop:15,
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: "bold",
     },
     chatText: {
-        flexDirection: 'column'
+        flexDirection: "column",
+        marginLeft: 10,
     },
     avatar: {
-        width:75,
-        height: 75,
-        flex: 1,
-        borderRadius: 20,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
     },
     lastMessage: {
-        color: '#949494'
-    }
+        color: "#949494",
+    },
 });
+

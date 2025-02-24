@@ -37,6 +37,7 @@ export default function Profile() {
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
 
+  
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
@@ -81,24 +82,35 @@ export default function Profile() {
         const user = auth.currentUser;
         if (user) {
           const docRef = doc(db, "users", user.uid);
-          console.log("Saving profile changes...");
-
-          await updateDoc(docRef, {
-            bio,
-            major,
-            classification,
-          });
-
-          Alert.alert("Success", "Profile updated successfully!");
-          setIsEditing(false);
-
-          // Update user details immediately after saving
-          setUserDetails((prevDetails: typeof userDetails) => ({
-            ...prevDetails,
-            bio,
-            major,
-            classification,
-          }));
+          const docSnap = await getDoc(docRef);
+  
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            let newPoints = data.points || 0;
+  
+            // Check if bio, major, or classification is being filled for the first time
+            if (!data.bio && bio) newPoints += 5;
+            if (!data.major && major) newPoints += 5;
+            if (!data.classification && classification) newPoints += 5;
+  
+            await updateDoc(docRef, {
+              bio,
+              major,
+              classification,
+              points: newPoints, // Update points in Firestore
+            });
+  
+            Alert.alert("Success", "Profile updated successfully!");
+            setIsEditing(false);
+  
+            // Update user details in state
+            setUserDetails((prevDetails: typeof userDetails) => ({
+              ...prevDetails,
+              bio,
+              major,
+              classification,
+            }));
+          }
         }
       } catch (error) {
         console.error("Update error:", error);
@@ -108,6 +120,9 @@ export default function Profile() {
       setIsEditing(true);
     }
   };
+  
+
+  
 
   const handleAvatarSelection = async (avatar: { filename: string; source: any }) => {
     try {

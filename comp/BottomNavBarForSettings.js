@@ -21,6 +21,10 @@ export default function BottomNavBar() {
                     <Ionicons name="school-outline" size={30} color="white" />
                     <Text style={styles.widgetText}>Classes</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.widget} onPress={() => router.push("/leaderboard")}>
+                    <Ionicons name="trophy-outline" size={30} color="white" />
+                    <Text style={styles.widgetText}>Leaderboard</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.widget} onPress={() => router.push("/events")}>
                     <Ionicons name="calendar-outline" size={30} color="white" />
                     <Text style={styles.widgetText}>Events</Text>

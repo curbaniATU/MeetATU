@@ -191,7 +191,12 @@ const createEvent = async () => {
         </SafeAreaView>
         
       </View>
-      <BottomNavBar />
+      <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
+  <BottomNavBar />
+</View>
+
+
+      
       </SafeAreaView>
       
     );
@@ -199,9 +204,9 @@ const createEvent = async () => {
 
   // **Event Creation View**
   return (
-    <View style={{ flex: 1, justifyContent: "space-between", backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
+    <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
       <SafeAreaView style={{ flex: 1, padding: 20 }}>
-      <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Create Study Group Event</Text>
+      <Text style={[styles.createTitle, { color: darkMode ? "#ffffff" : "#333" }]}>Create Study Group Event</Text>
         <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Event Name" placeholderTextColor={darkMode ? "#aaaaaa" : "#555"} value={eventName}onChangeText={setEventName} />
         <TextInput style={[ styles.input,styles.multiline,{backgroundColor: darkMode ? "#333" : "#ffffff",color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc", },]}placeholder="Event Description (location, time, topic)"placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={eventDescription} onChangeText={setEventDescription}multiline/>
         <Text style={[styles.subtitle, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>Invite Users</Text>
@@ -228,10 +233,14 @@ const createEvent = async () => {
       <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]} onPress={toggleView}>
         <Text style={styles.backButtonText}>Back to Events</Text>
       </TouchableOpacity>
-      <BottomNavBar />
-      </SafeAreaView>
-    
-    </View>
+      </SafeAreaView> 
+
+      <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
+  <BottomNavBar />
+</View>
+
+       
+     </View>
   );
 };
 
@@ -241,10 +250,20 @@ export default Events;
 const styles = StyleSheet.create({
   content: {
     flexGrow: 1, 
-    justifyContent: 'center',
-    paddingBottom: 20,
+  
   },
     container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: '#f5f5f5',
+      paddingTop: Platform.OS === 'ios' ? StatusBar.currentHeight || 50 : 20,
+      width:"100%",
+      paddingVertical: 10,
+      alignItems: "center",
+      justifyContent: 'center',
+    
+    },
+    createTitle: {
       flex: 1,
       padding: 20,
       backgroundColor: '#f5f5f5',
@@ -325,12 +344,15 @@ const styles = StyleSheet.create({
       marginVertical: 10,
       marginLeft: 18,
       marginRight: 18,
-      marginBottom: 40,
+      marginBottom: 90,
     },
     createButtonText: {
       color: '#fff',
       fontSize: 18,
       fontWeight: 'bold',
+      padding: 10,
+      paddingHorizontal:40,
+      
     },
     eventCard: {
       backgroundColor: '#fff',
@@ -353,11 +375,12 @@ const styles = StyleSheet.create({
     leaveButton: {
       marginTop: 10,
       backgroundColor: '#d9534f',
-      paddingVertical: 10,
+      paddingHorizontal: 40,
       borderRadius: 20,
       alignItems: 'center',
       marginLeft: 120,
       marginRight: 120,
+      padding:10,
     },
     leaveButtonText: {
       color: '#fff',

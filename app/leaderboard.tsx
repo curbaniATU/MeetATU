@@ -77,10 +77,15 @@ const Leaderboard: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#ffffff" }]}>
-      <SafeAreaView style={styles.innerContainer}>
-      <LinearGradient colors={darkMode ? ["#111111", "#555555"]  : ["#24786D", "#3EA325"]}style={styles.gradient}>          
-      <Text style={[styles.header, { color: darkMode ? "#ffffff" : "#ffffff" }]}>Leaderboard</Text>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <LinearGradient 
+          colors={darkMode ? ["#111111", "#555555"] : ["#24786D", "#3EA325"]}
+          style={{ flex: 1 }}
+        >          
+          <Text style={[styles.header, { color: "#ffffff" }]}>
+            Leaderboard
+          </Text>
   
           {message && <Text style={styles.message}>{message}</Text>}
   
@@ -88,39 +93,51 @@ const Leaderboard: React.FC = () => {
             data={players}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
-              <View style={[styles.playerRow, { backgroundColor: darkMode ? "#222" : "#ffffff" }]}>
-                <Text style={[styles.playerText, { color: darkMode ? "#80cbc4" : "#333" }]}>
-                {index + 1}. {item.username} - {item.points} pts
+              <View style={[styles.playerRow, { backgroundColor: "white", borderRadius: 10, padding: 8, marginVertical: 3 }]}>
+
+                <Text style={[styles.playerText, { color: "#333" }]}>
+                  {index + 1}. {item.username} - {item.points} pts
                 </Text>
               </View>
             )}
           />
   
-  <Text style={[styles.chartHeader, { color: darkMode ? "#80cbc4" : "#ffffff" }]}>  How to Earn Points  </Text>
-  <View style={[ styles.chartContainer,{ backgroundColor: darkMode ? "#1E1E1E" : "#ffffff", borderColor: darkMode ? "#555" : "#ddd" },]}>            
-    <ScrollView style={styles.scrollContainer}>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Message someone in a class: 5 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Message 5 people in a class: 20 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Make a study chat: 10 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Attend a study group: 20 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Join a study event: 15 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Participate in a group chat: 5 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Reply to a message: 3 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- 20 points automatically for creating a profile</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Send a friend request: 5 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Accept a friend request: 5 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Log in daily: 5 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Leaderboard climb: 20 points</Text>
-              <Text style={[styles.chartText, { color: darkMode ? "#cccccc" : "#333" }]}>- Fill out major, bio, classification: 5 points</Text>
-            </ScrollView>
-          </View>
+          <Text style={[styles.chartHeader, { color: "#ffffff",marginTop:-300 }]}>
+            How to Earn Points
+          </Text>
+  
+          {/* Scrollable "How to Earn Points" Section */}
+          <ScrollView 
+            style={{ flex: 1, marginHorizontal: 10, margin:10}}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            showsVerticalScrollIndicator={true}
+          >
+            <View style={{ backgroundColor: "white", borderRadius: 10, padding: 15 }}>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Message someone in a class: 5 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Message 5 people in a class: 20 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Make a study chat: 10 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Attend a study group: 20 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Join a study event: 15 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Participate in a group chat: 5 points per message</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Reply to a message: 3 points per reply</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Create a profile: 20 points automatically</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Send a friend request: 5 points per request</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Accept a friend request: 5 points per accepted request</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Log in daily: 5 points per consecutive day</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Leaderboard climb: 20 points for reaching a new rank</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>- Fill out major, bio, classification: 5 points</Text>
+            </View>
+          </ScrollView>
         </LinearGradient>
+        <BottomNavBar />
       </SafeAreaView>
   
-      <View style={styles.bottomSpacing}></View>
-      <BottomNavBar />
+  
+        <BottomNavBar />
+      
     </View>
   );
+  
             }  
 const styles = StyleSheet.create({
   container: {
@@ -137,6 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop:20,
     marginBottom: 20,
     color: 'white',
   },
@@ -144,15 +162,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 8, // NEW - Less spacing
   },
+  
   playerText: {
     fontSize: 18,
     color: 'white',
   },
   message: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 16,
     color: 'green',
   },
@@ -185,7 +204,7 @@ const styles = StyleSheet.create({
     maxHeight: 350, 
   },
   bottomSpacing: {
-    height: 70, // Adjust the height as needed
+    height: 70, 
   },
   innerContainer: {
     flex: 1,

@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8, // NEW - Less spacing
+    margin: 10,
   },
   
   playerText: {

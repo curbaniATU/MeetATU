@@ -8,6 +8,7 @@ import { collection, addDoc, updateDoc, doc, onSnapshot, arrayRemove } from 'fir
 import { db, auth } from '../comp/firebase';
 import BottomNavBar from '../comp/BottomNavBarForEvents';
 import useThemeStore from "@/comp/themeStore"; 
+import { KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 // Define Interfaces
 interface Event {
@@ -204,43 +205,74 @@ const createEvent = async () => {
 
   // **Event Creation View**
   return (
-    <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
-      <SafeAreaView style={{ flex: 1, padding: 20 }}>
-      <Text style={[styles.createTitle, { color: darkMode ? "#ffffff" : "#333" }]}>Create Study Group Event</Text>
-        <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Event Name" placeholderTextColor={darkMode ? "#aaaaaa" : "#555"} value={eventName}onChangeText={setEventName} />
-        <TextInput style={[ styles.input,styles.multiline,{backgroundColor: darkMode ? "#333" : "#ffffff",color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc", },]}placeholder="Event Description (location, time, topic)"placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={eventDescription} onChangeText={setEventDescription}multiline/>
-        <Text style={[styles.subtitle, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>Invite Users</Text>
-        <TextInput style={[styles.input,{backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000",borderColor: darkMode ? "#888" : "#ccc",},]}placeholder="Search users..." placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}value={searchQuery} onChangeText={setSearchQuery}/>
-          {showDropdown && (
-          <View style={[styles.dropdown, { backgroundColor: darkMode ? "#222" : "#ffffff", borderColor: darkMode ? "#555" : "#ccc" }]}>
-          <FlatList
-            keyboardShouldPersistTaps="handled"
-            data={users}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.dropdownItem} onPress={() => inviteUser(item)}>
-              <Text style={[styles.dropdownItemText, { color: darkMode ? "#ffffff" : "#333" }]}>{item.name}</Text>
-              </TouchableOpacity>
-            )}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"} // ✅ Prevents navbar from moving
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}> 
+        <SafeAreaView style={{ flex: 1, padding: 20 }}>
+          <Text style={[styles.createTitle, { color: darkMode ? "#ffffff" : "#333" }]}>
+            Create Study Group Event
+          </Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc" }]}
+            placeholder="Event Name"
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
+            value={eventName}
+            onChangeText={setEventName}
           />
-        </View>
-      )}
-
-      <TouchableOpacity style={[styles.createButton, { backgroundColor: darkMode ? "#28a745" : "#28a745" }]} onPress={createEvent}>
-        <Text style={styles.createButtonText}>Create Event</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]} onPress={toggleView}>
-        <Text style={styles.backButtonText}>Back to Events</Text>
-      </TouchableOpacity>
-      </SafeAreaView> 
-
+          <TextInput
+            style={[styles.input, styles.multiline, { backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc" }]}
+            placeholder="Event Description (location, time, topic)"
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
+            value={eventDescription}
+            onChangeText={setEventDescription}
+            multiline
+          />
+          <Text style={[styles.subtitle, { color: darkMode ? "#80cbc4" : "#007b5e" }]}>Invite Users</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: darkMode ? "#333" : "#ffffff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#ccc" }]}
+            placeholder="Search users..."
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {showDropdown && (
+            <View style={[styles.dropdown, { backgroundColor: darkMode ? "#222" : "#ffffff", borderColor: darkMode ? "#555" : "#ccc" }]}>
+              <FlatList
+                keyboardShouldPersistTaps="handled"
+                data={users}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={styles.dropdownItem} onPress={() => inviteUser(item)}>
+                    <Text style={[styles.dropdownItemText, { color: darkMode ? "#ffffff" : "#333" }]}>{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )}
+  
+          <TouchableOpacity
+            style={[styles.createButton, { backgroundColor: darkMode ? "#28a745" : "#28a745" }]}
+            onPress={createEvent}
+          >
+            <Text style={styles.createButtonText}>Create Event</Text>
+          </TouchableOpacity>
+  
+          <TouchableOpacity
+            style={[styles.backButton, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}
+            onPress={toggleView}
+          >
+            <Text style={styles.backButtonText}>Back to Events</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+  
+      {/* ✅ Ensure BottomNavBar stays fixed */}
       <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
-  <BottomNavBar />
-</View>
-
-       
-     </View>
+        <BottomNavBar />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -264,11 +296,14 @@ const styles = StyleSheet.create({
     
     },
     createTitle: {
-      flex: 1,
+      
       padding: 20,
       backgroundColor: '#f5f5f5',
-      paddingTop: Platform.OS === 'ios' ? StatusBar.currentHeight || 50 : 20,
+      paddingTop: Platform.OS === 'ios' ? StatusBar.currentHeight || 20 : 20,
       marginBottom: 50,
+      textAlign: 'center',
+      fontSize: 23,
+      fontWeight: 'bold',
     },
     title: {
       fontSize: 28,
@@ -344,15 +379,14 @@ const styles = StyleSheet.create({
       marginVertical: 10,
       marginLeft: 18,
       marginRight: 18,
-      marginBottom: 90,
+      marginBottom: 70,
     },
     createButtonText: {
       color: '#fff',
       fontSize: 18,
       fontWeight: 'bold',
       padding: 10,
-      paddingHorizontal:40,
-      
+      paddingHorizontal: 40,
     },
     eventCard: {
       backgroundColor: '#fff',

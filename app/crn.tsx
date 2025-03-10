@@ -82,8 +82,8 @@ export default function RegisterClassesPage() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
-      <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+    <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
+      <View style={{ flex: 1, alignItems: "center" }}>
         <Text style={[styles.heading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>Register for Classes</Text>
         <Text style={[styles.subheading, { color: darkMode ? "#cccccc" : "#007b5e" }]}>It’s time to add your classes!</Text>
         
@@ -94,8 +94,7 @@ export default function RegisterClassesPage() {
           value={classCode}
           onChangeText={setClassCode}
         />
-
-        {/* ✅ Switch for consent */}
+  
         <View style={styles.checkboxContainer}>
           <Switch
             value={isChecked}
@@ -107,8 +106,7 @@ export default function RegisterClassesPage() {
             By submitting, you consent to sharing your class enrollment status with students in your same class.
           </Text>
         </View>
-
-        {/* Submit Button - Disabled unless checkbox is checked */}
+  
         <TouchableOpacity
           style={[styles.enterButton, { backgroundColor: isChecked ? "#007b5e" : "#aaa" }]}
           onPress={handleAddClass}
@@ -116,7 +114,7 @@ export default function RegisterClassesPage() {
         >
           <Text style={styles.enterButtonText}>Submit</Text>
         </TouchableOpacity>
-
+  
         {isLoading ? (
           <ActivityIndicator size="large" color={darkMode ? "#ffffff" : "#007b5e"} />
         ) : (
@@ -131,16 +129,19 @@ export default function RegisterClassesPage() {
             )}
           />
         )}
-      </SafeAreaView>
-
+      </View>
+  
+      {/* ✅ BottomNavBar is now correctly positioned */}
       <BottomNavBar />
-    </View>
+    </SafeAreaView>
   );
+  
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, // Ensures the container takes full height
+    justifyContent: "space-between", // Pushes content up, places navbar at bottom
     padding: 16,
   },
   heading: {

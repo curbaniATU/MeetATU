@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, StyleSheet, FlatList, View, TouchableOpacity, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient'; // Background gradient effect
-import { db } from "../comp/firebase"; // Import Firebase
+import { LinearGradient } from 'expo-linear-gradient';
+import { db } from "../comp/firebase"; 
 import { collection, query, orderBy, getDocs, updateDoc, doc} from "firebase/firestore";
 import BottomNavBar from '../comp/BottomNavBarForLeaderboard';
 import useThemeStore from "@/comp/themeStore"; 
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from 'expo-router';
 
 // Define Player interface (now stored inside `users` collection)
 interface Player {
@@ -18,6 +20,7 @@ const Leaderboard: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
+  const router = useRouter();
 
   // Fetch leaderboard data from USERS collection
   const fetchLeaderboard = async () => {
@@ -30,7 +33,6 @@ const Leaderboard: React.FC = () => {
             .filter((doc) => doc.data().points !== undefined) 
             .map((doc) => {
                 const userData = doc.data();
-                console.log("🔥 Retrieved User:", userData); 
                 return {
                     id: doc.id, 
                     username: userData.username || "Unknown", 
@@ -38,7 +40,6 @@ const Leaderboard: React.FC = () => {
                 };
             });
 
-        console.log("🔥 Final Leaderboard Data:", leaderboardData); 
         const topPlayers = leaderboardData.slice(0, 3); 
         setPlayers(topPlayers);
     } catch (error) {
@@ -64,17 +65,9 @@ const Leaderboard: React.FC = () => {
     }
   };
 
-
   if (loading) {
     return <Text style={[styles.loadingText, { color: darkMode ? "#ffffff" : "#333" }]}>Loading leaderboard...</Text>;
   }
-
-  const renderMedal = (index: number) => {
-    if (index === 0) return "🥇"; 
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉"; 
-    return null;
-  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -83,9 +76,13 @@ const Leaderboard: React.FC = () => {
           colors={darkMode ? ["#111111", "#555555"] : ["#24786D", "#3EA325"]}
           style={{ flex: 1 }}
         >          
-          <Text style={[styles.header, { color: "#ffffff" }]}>
-            Leaderboard
-          </Text>
+          {/* Header with Back Button & Leaderboard Title */}
+          <View style={styles.headerContainer}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+              <Ionicons name="arrow-back" size={28} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Leaderboard</Text>
+          </View>
   
           {message && <Text style={styles.message}>{message}</Text>}
   
@@ -94,7 +91,6 @@ const Leaderboard: React.FC = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => (
               <View style={[styles.playerRow, { backgroundColor: "white", borderRadius: 10, padding: 8, marginVertical: 3 }]}>
-
                 <Text style={[styles.playerText, { color: "#333" }]}>
                   {index + 1}. {item.username} - {item.points} pts
                 </Text>
@@ -102,7 +98,7 @@ const Leaderboard: React.FC = () => {
             )}
           />
   
-          <Text style={[styles.chartHeader, { color: "#ffffff",marginTop:-300 }]}>
+          <Text style={[styles.chartHeader, { color: "#ffffff", marginTop: -300 }]}>
             How to Earn Points
           </Text>
   
@@ -112,7 +108,7 @@ const Leaderboard: React.FC = () => {
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={true}
           >
-            <View style={{ backgroundColor: "white", borderRadius: 10, padding: 15 }}>
+            <View style={{ backgroundColor: "white", borderRadius: 10, padding: 13 }}>
               <Text style={[styles.chartText, { color: "#333" }]}>- Message someone in a class: 5 points</Text>
               <Text style={[styles.chartText, { color: "#333" }]}>- Message 5 people in a class: 20 points</Text>
               <Text style={[styles.chartText, { color: "#333" }]}>- Make a study chat: 10 points</Text>
@@ -131,41 +127,41 @@ const Leaderboard: React.FC = () => {
         </LinearGradient>
         <BottomNavBar />
       </SafeAreaView>
-  
-  
-        <BottomNavBar />
-      
     </View>
   );
-  
-            }  
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 20,
     justifyContent: 'center',
   },
-  gradient: {
-    flex: 1,
-    padding: 20,
-    borderRadius: 10,
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    backgroundColor: "#24786D",
   },
-  header: {
+  iconButton: { 
+    padding: 10 
+  },
+  headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop:20,
-    marginBottom: 20,
     color: 'white',
+    textAlign: 'center',
+    flex: 1, // Ensures the text stays centered
   },
   playerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8, // NEW - Less spacing
+    marginBottom: 8, 
     margin: 10,
   },
-  
   playerText: {
     fontSize: 18,
     color: 'white',
@@ -212,7 +208,6 @@ const styles = StyleSheet.create({
     margin: 20,
     justifyContent: "center",
   },
-
 });
 
 export default Leaderboard;

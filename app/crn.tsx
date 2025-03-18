@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Alert, ActivityIndicator } from "react-native";
 import {
-  SafeAreaView, Text, TextInput, Image,
-  TouchableOpacity, FlatList, StyleSheet, View, Switch
+  SafeAreaView, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, View, Switch
 } from "react-native";
 import { useRouter } from "expo-router";
 import { db, auth } from "../comp/firebase"; 
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import BottomNavBar from '../comp/BottomNavBarForEvents';
 import useThemeStore from "@/comp/themeStore";  
+import { Ionicons } from "@expo/vector-icons";
 
 interface ClassItem {
   code: string;
@@ -19,7 +19,6 @@ export default function RegisterClassesPage() {
   const { darkMode } = useThemeStore();
   const [classCode, setClassCode] = useState("");
   const [registeredClasses, setRegisteredClasses] = useState<ClassItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
 
@@ -83,10 +82,22 @@ export default function RegisterClassesPage() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
+
+      {/* Header with Back Button */}
+      <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+          <Ionicons name="arrow-back" size={28} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Register for Classes</Text>
+        <View style={styles.iconButton} />
+      </View>
+
+      {/* Centered Subtitle */}
+      <Text style={[styles.subheading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>
+        It’s time to add your classes!
+      </Text>
+
       <View style={{ flex: 1, alignItems: "center" }}>
-        <Text style={[styles.heading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>Register for Classes</Text>
-        <Text style={[styles.subheading, { color: darkMode ? "#cccccc" : "#007b5e" }]}>It’s time to add your classes!</Text>
-        
         <TextInput
           style={[styles.input, { backgroundColor: darkMode ? "#333" : "#fff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#007b5e" }]}
           placeholder="Enter Class Code"
@@ -115,45 +126,50 @@ export default function RegisterClassesPage() {
           <Text style={styles.enterButtonText}>Submit</Text>
         </TouchableOpacity>
   
-        {isLoading ? (
-          <ActivityIndicator size="large" color={darkMode ? "#ffffff" : "#007b5e"} />
-        ) : (
-          <FlatList
-            style={{ marginTop: 16, width: "100%" }}
-            data={registeredClasses}
-            keyExtractor={(item) => item.code}
-            renderItem={({ item }) => (
-              <View style={[styles.classItem, { backgroundColor: darkMode ? "#1E1E1E" : "#f9f9f9", borderColor: darkMode ? "#555" : "#004d2b" }]}>
-                <Text style={[styles.classText, { color: darkMode ? "#ffffff" : "#004d2b" }]}>{item.title} ({item.code})</Text>
-              </View>
-            )}
-          />
-        )}
+        <FlatList
+          style={{ marginTop: 16, width: "100%" }}
+          data={registeredClasses}
+          keyExtractor={(item) => item.code}
+          renderItem={({ item }) => (
+            <View style={[styles.classItem, { backgroundColor: darkMode ? "#1E1E1E" : "#f9f9f9", borderColor: darkMode ? "#555" : "#004d2b" }]}>
+              <Text style={[styles.classText, { color: darkMode ? "#ffffff" : "#004d2b" }]}>{item.title} ({item.code})</Text>
+            </View>
+          )}
+        />
       </View>
-  
-      {/* ✅ BottomNavBar is now correctly positioned */}
+
       <BottomNavBar />
     </SafeAreaView>
   );
-  
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensures the container takes full height
-    justifyContent: "space-between", // Pushes content up, places navbar at bottom
+    flex: 1,
+    justifyContent: "space-between",
     padding: 16,
   },
-  heading: {
-    fontSize: 26,
+  header: {
+    height: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#24786D",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+  },
+  iconButton: { padding: 10 },
+  headerText: {
+    fontSize: 20,
     fontWeight: "bold",
-    marginTop: 60,
+    textAlign: "center",
+    color: "white",
   },
   subheading: {
     fontSize: 18,
-    marginBottom: 16,
-    marginTop: 8,
+    fontWeight: "bold",
     textAlign: "center",
+    marginTop: 20,
+    marginBottom: 10,
   },
   input: {
     width: "95%",
@@ -177,7 +193,7 @@ const styles = StyleSheet.create({
   },
   enterButton: {
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 20,
     alignItems: "center",
     width: "95%",
   },

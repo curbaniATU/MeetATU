@@ -4,7 +4,8 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../comp/firebase";
 import BottomNavBar from "../comp/BottomNavForClasses";
 import useThemeStore from "@/comp/themeStore"; 
-import { useRouter } from "expo-router"; // ✅ Import useRouter
+import { useRouter } from "expo-router"; 
+import { Ionicons } from "@expo/vector-icons"; 
 
 interface ClassData {
   Instructor: string;
@@ -14,12 +15,12 @@ interface ClassData {
   students: string[];
 }
 
-export default function ClassesScreen() {
+const ClassesScreen = () => {
   const { darkMode } = useThemeStore(); 
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [userClasses, setUserClasses] = useState<string[]>([]);
   const currentUser = auth.currentUser?.uid;
-  const router = useRouter(); // ✅ Initialize router
+  const router = useRouter(); 
 
   useEffect(() => {
     const fetchUserClasses = async () => {
@@ -86,10 +87,18 @@ export default function ClassesScreen() {
   }, [userClasses]);
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}
-    >
-      <Text style={[styles.title, { color: darkMode ? "#ffffff" : "#333" }]}>Your Classes</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+      
+      {/* Header with Back Button & '+' Add Class Button */}
+      <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+          <Ionicons name="arrow-back" size={28} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Your Classes</Text>
+        <TouchableOpacity onPress={() => router.push("/crn")} style={styles.iconButton}>
+          <Ionicons name="add-circle-outline" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
 
       {classes.length > 0 ? (
         <FlatList
@@ -132,15 +141,10 @@ export default function ClassesScreen() {
         </Text>
       )}
 
-      {/* ✅ Add Class Button (Fixed at Bottom Center) */}
-      <TouchableOpacity style={styles.addButton} onPress={() => router.push("/crn")}>
-        <Text style={styles.addButtonText}>Add Class</Text>
-      </TouchableOpacity>
-
       <BottomNavBar />
     </SafeAreaView>
   );
-}
+};
 
 // **Styles**
 const styles = StyleSheet.create({
@@ -149,11 +153,20 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: Platform.OS === "ios" ? StatusBar.currentHeight || 50 : 20,
   },
-  title: {
-    fontSize: 28,
+  header: {
+    height: 60,
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#24786D",
+    justifyContent: "space-between",
+  },
+  iconButton: { padding: 10 },
+  headerText: {
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    color: "white",
   },
   classContainer: {
     padding: 15,
@@ -182,25 +195,6 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
   },
-  addButton: {
-    position: "absolute",
-    bottom: 150, // Adjust to keep above BottomNavBar
-    alignSelf: "center",
-    backgroundColor: '#007b5e',
-    paddingVertical: 12,
-    paddingHorizontal: 45,
-    borderRadius: 25,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
 });
 
+export default ClassesScreen;

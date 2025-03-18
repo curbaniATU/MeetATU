@@ -258,11 +258,21 @@ export default function Profile() {
       <TouchableOpacity style={[styles.sideButton, { backgroundColor: darkMode ? "#3EA325" : "#24786D" }]} onPress={handleEditProfile}>
       <Text style={styles.buttonText}>{isEditing ? "Save Changes" : "Edit Profile"}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.sideButton2} onPress={async () => {
-        await auth.signOut();
-        router.replace("/login"); }}>
+      <TouchableOpacity
+        style={styles.sideButton2}
+        onPress={async () => {
+          try {
+            await auth.signOut();
+            setUserDetails(null); // Clear user details
+            router.replace("/login"); // Redirect to login page
+            } catch (error) {
+            console.error("Logout error:", error);
+            Alert.alert("Error", "Failed to log out. Please try again.");
+          }
+        }}>
         <Text style={styles.buttonText2}>Logout</Text>
       </TouchableOpacity>
+
       </View>
 
       

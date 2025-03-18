@@ -3,7 +3,7 @@ import { useUserStore } from "@/comp/userStore";
 import { useAvatar } from "@/comp/avatarFetch";
 import { useChatStore } from "@/comp/chatStore";
 import { useRouter } from "expo-router";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,6 +16,9 @@ export default function ChatList() {
     const { darkMode } = useThemeStore();
     const [avatar, setAvatar] = useState<{ [key: string]: any }>({});
     const [chats, setChats] = useState<any[]>([]);
+    const [selectedChats, setSelectedChats] = useState<string[]>([]);
+    const [selectionMode, setSelectionMode] = useState(false);
+    
     const { currentUser } = useUserStore();
     const { fetchChatInfo } = useChatStore();
 
@@ -52,24 +55,101 @@ export default function ChatList() {
         setAvatar(avatarMap);
     }, [chats]);
 
+    // Toggle selection mode
+    const toggleSelectionMode = () => {
+        if (selectionMode && selectedChats.length === 0) {
+            setSelectionMode(false); // Exit selection mode if no chats are selected
+        } else {
+            setSelectionMode(true); // Otherwise, enter selection mode
+        }
+    };
+
+    // Handle chat selection
+    const toggleChatSelection = (chatId: string) => {
+        if (selectedChats.includes(chatId)) {
+            setSelectedChats(selectedChats.filter((id) => id !== chatId));
+        } else {
+            setSelectedChats([...selectedChats, chatId]);
+        }
+    };
+
+    // Delete selected chats
+    const handleDeleteChats = async () => {
+        try {
+            const userChatRef = doc(db, "chats", currentUser.id);
+            const userChatSnap = await getDoc(userChatRef);
+            
+            if (userChatSnap.exists()) {
+                const userChats = userChatSnap.data()?.chats || [];
+                const updatedChats = userChats.filter((chat: any) => !selectedChats.includes(chat.chatId));
+                await updateDoc(userChatRef, { chats: updatedChats });
+            }
+
+            // Also delete chats from the receivers
+            for (const chatId of selectedChats) {
+                const chat = chats.find((chat) => chat.chatId === chatId);
+                if (chat) {
+                    const receiverChatRef = doc(db, "chats", chat.user.id);
+                    const receiverChatSnap = await getDoc(receiverChatRef);
+
+                    if (receiverChatSnap.exists()) {
+                        const receiverChats = receiverChatSnap.data()?.chats || [];
+                        const updatedReceiverChats = receiverChats.filter((c: any) => c.chatId !== chatId);
+                        await updateDoc(receiverChatRef, { chats: updatedReceiverChats });
+                    }
+                }
+            }
+
+            // Update local state
+            setChats(chats.filter((chat) => !selectedChats.includes(chat.chatId)));
+            setSelectedChats([]);
+            setSelectionMode(false);
+        } catch (error) {
+            console.error("Error deleting chats:", error);
+        }
+    };
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#ffffff" }]}>
-            {/* Header with Messages Title and Trophy Button */}
+            {/* Header with Messages Title, Trash & Create Buttons */}
             <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
-                <Text style={[styles.headerText, { color: darkMode ? "#ffffff" : "#ffffff" }]}>Messages</Text>
-                <TouchableOpacity onPress={() => router.push("/createChat")} style={styles.createButton}>
-                    <Ionicons name="create-outline" size={40} color={darkMode ? "#80cbc4" : "white"} />
+                <TouchableOpacity onPress={toggleSelectionMode} style={styles.iconButton}>
+                    <Ionicons name="trash-outline" size={28} color="white" />
                 </TouchableOpacity>
+
+                <Text style={[styles.headerText, { color: darkMode ? "#ffffff" : "#ffffff" }]}>
+                    {selectionMode ? `${selectedChats.length} Selected` : "Messages"}
+                </Text>
+
+                {selectionMode && selectedChats.length > 0 && (
+                    <TouchableOpacity onPress={handleDeleteChats} style={styles.iconButton}>
+                        <Ionicons name="checkmark-outline" size={28} color="white" />
+                    </TouchableOpacity>
+                )}
+
+                {!selectionMode && (
+                    <TouchableOpacity onPress={() => router.push("/createChat")} style={styles.iconButton}>
+                        <Ionicons name="create-outline" size={28} color="white" />
+                    </TouchableOpacity>
+                )}
             </View>
 
             {/* Chat List */}
             {chats.map((chat) => (
                 <TouchableOpacity
-                style={[styles.chatItem, { backgroundColor: darkMode ? "#1E1E1E" : "white", borderColor: darkMode ? "#444" : "#24786D" }]}
-                key={chat.chatId}
+                    style={[
+                        styles.chatItem,
+                        { backgroundColor: darkMode ? "#1E1E1E" : "white", borderColor: darkMode ? "#444" : "#24786D" },
+                        selectedChats.includes(chat.chatId) && styles.selectedChat,
+                    ]}
+                    key={chat.chatId}
                     onPress={() => {
-                        fetchChatInfo(chat.chatId, chat.user);
-                        router.push("/chat");
+                        if (selectionMode) {
+                            toggleChatSelection(chat.chatId);
+                        } else {
+                            fetchChatInfo(chat.chatId, chat.user);
+                            router.push("/chat");
+                        }
                     }}
                 >
                     <View>
@@ -82,7 +162,14 @@ export default function ChatList() {
                     <View style={styles.chatText}>
                         <Text style={[styles.chatUser, { color: darkMode ? "#ffffff" : "#000000" }]}>{chat.user.username}</Text>
                         <Text style={[styles.lastMessage, { color: darkMode ? "#aaaaaa" : "#949494" }]}>{chat.lastMessage}</Text>
-                   </View>
+                    </View>
+                    {selectionMode && (
+                        <Ionicons
+                            name={selectedChats.includes(chat.chatId) ? "checkmark-circle" : "ellipse-outline"}
+                            size={28}
+                            color={selectedChats.includes(chat.chatId) ? "#4CAF50" : "#aaa"}
+                        />
+                    )}
                 </TouchableOpacity>
             ))}
 
@@ -92,56 +179,35 @@ export default function ChatList() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#E3E4E4",
-    },
+    container: { flex: 1 },
     header: {
-        backgroundColor: "#24786D",
         padding: 15,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
     },
+    iconButton: { padding: 10 },
     headerText: {
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: "bold",
-        color: "white",
         textAlign: "center",
         flex: 1,
-    },
-    trophyButton: {
-        position: "absolute",
-        right: 15,
     },
     chatItem: {
         borderBottomWidth: 1,
         padding: 10,
-        width: "100%",
         flexDirection: "row",
         alignItems: "center",
         borderColor: "#24786D",
-        backgroundColor: "white",
-    },
-    chatUser: {
-        fontSize: 18,
-        fontWeight: "bold",
     },
     chatText: {
         flexDirection: "column",
         marginLeft: 10,
     },
-    avatar: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-    },
     lastMessage: {
         color: "#949494",
     },
-    createButton: {
-        position: "absolute",
-        right: 15,
-    },
+    selectedChat: { backgroundColor: "#ddd" },
+    chatUser: { fontSize: 18, fontWeight: "bold" },
+    avatar: { width: 50, height: 50, borderRadius: 25 },
 });
-

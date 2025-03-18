@@ -18,8 +18,8 @@ import { signOut } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
 import { useUserStore } from "../comp/userStore";
 import BottomNavBar from '../comp/BottomNavBarForSettings';
-
 import useThemeStore from "@/comp/themeStore";  
+import { Ionicons } from "@expo/vector-icons"; 
 
 const avatarOptions = [
     { filename: "black.png", source: require('../assets/Avatars/black.png') },
@@ -85,10 +85,25 @@ export default function SettingsScreen() {
     };
 
     return (
-        <View style={{ flex: 1, justifyContent: 'space-between', backgroundColor: darkMode ? '#121212' : '#f5f5f5' }}>
-            <SafeAreaView style={[styles.container]}>
-                <Text style={[styles.heading, darkMode && styles.darkText]}>Settings</Text>
+        <View style={{ flex: 1, backgroundColor: darkMode ? '#121212' : '#f5f5f5' }}>
+            {/* ✅ SafeAreaView for Dynamic Island / Notch */}
+            <SafeAreaView style={{ backgroundColor: "#24786D" }} />
+            
+            {/* ✅ Fixed Header */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+                    <Ionicons name="arrow-back" size={28} color="white" />
+                </TouchableOpacity>
 
+                {/* ✅ Title should be inside a separate `View` */}
+                <View style={styles.headerTitleContainer}>
+                    <Text style={styles.headerText}>Settings</Text>
+                </View>
+
+                <View style={{ width: 40 }} /> {/* Spacer for alignment */}
+            </View>
+
+            <SafeAreaView style={styles.container}>
                 <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.avatarContainer}>
                     {selectedAvatar && <Image source={selectedAvatar.source} style={styles.profileImage} />}
                     <Text style={[styles.settingText, darkMode && styles.darkText]}>Change Avatar</Text>
@@ -136,17 +151,30 @@ export default function SettingsScreen() {
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Text style={styles.buttonText}>Logout</Text>
                 </TouchableOpacity>
-
             </SafeAreaView>
-            <BottomNavBar/>
+            
+            <BottomNavBar />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    header: {
+        height: 60,
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#24786D",
+        justifyContent: "space-between",
+        paddingHorizontal: 15,
+    },
+    iconButton: { padding: 10 },
+    headerTitleContainer: { flex: 1, alignItems: "center" },
+    headerText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white",
+    },
     container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
-    heading: { fontSize: 28, fontWeight: 'bold', marginBottom: 30, color: '#333' },
-    darkText: { color: '#fff' },
     settingItem: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#ccc' },
     settingText: { color: '#007b5e', fontSize: 18 },
     logoutButton: { marginTop: 20, backgroundColor: '#f54242', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, marginBottom: 200, alignItems: 'center', marginHorizontal: 5 },
@@ -155,4 +183,5 @@ const styles = StyleSheet.create({
     modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
     avatarOption: { width: 80, height: 80, margin: 10, borderRadius: 40, borderWidth: 2, borderColor: '#fff' },
     buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+    darkText: { color: '#fff' },
 });

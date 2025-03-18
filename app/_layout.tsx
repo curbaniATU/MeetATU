@@ -136,6 +136,7 @@ export default function RootLayout() {
         <Stack.Screen name="leaderboard" options={{ title: "Leaderboard", headerShown: false }} />
         <Stack.Screen name="events" options={{ title: "Events", headerShown: false }} />
         <Stack.Screen name="chat_list" options={{ title: "Chat List", headerShown: false }} />
+        <Stack.Screen name="chat" options={{ title: "Chat List", headerShown: false }} />
         <Stack.Screen name="profile" options={{ title: "Profile", headerShown: false }} />
         <Stack.Screen name="home" options={{ title: "Home", headerShown: false }} />
         <Stack.Screen name="setting" options={{ title: "Settings", headerShown: false }} />

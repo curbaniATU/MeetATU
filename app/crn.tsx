@@ -81,65 +81,71 @@ export default function RegisterClassesPage() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
+    <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f3f3f3" }}>
 
-      {/* Header with Back Button */}
-      <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-          <Ionicons name="arrow-back" size={28} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Register for Classes</Text>
-        <View style={styles.iconButton} />
-      </View>
+      {/* ✅ Matches Header Background Above Header */}
+      <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
 
-      {/* Centered Subtitle */}
-      <Text style={[styles.subheading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>
-        It’s time to add your classes!
-      </Text>
-
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <TextInput
-          style={[styles.input, { backgroundColor: darkMode ? "#333" : "#fff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#007b5e" }]}
-          placeholder="Enter Class Code"
-          placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
-          value={classCode}
-          onChangeText={setClassCode}
-        />
-  
-        <View style={styles.checkboxContainer}>
-          <Switch
-            value={isChecked}
-            onValueChange={setIsChecked}
-            trackColor={{ false: "#ccc", true: "#007b5e" }}
-            thumbColor={isChecked ? "#ffffff" : "#666"}
-          />
-          <Text style={[styles.checkboxText, { color: darkMode ? "#aaaaaa" : "#007b5e" }]}>
-            By submitting, you consent to sharing your class enrollment status with students in your same class.
-          </Text>
+      <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
+        
+        {/* Header with Back Button */}
+        <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+            <Ionicons name="arrow-back" size={28} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Register for Classes</Text>
+          <View style={styles.iconButton} />
         </View>
-  
-        <TouchableOpacity
-          style={[styles.enterButton, { backgroundColor: isChecked ? "#007b5e" : "#aaa" }]}
-          onPress={handleAddClass}
-          disabled={!isChecked}
-        >
-          <Text style={styles.enterButtonText}>Submit</Text>
-        </TouchableOpacity>
-  
-        <FlatList
-          style={{ marginTop: 16, width: "100%" }}
-          data={registeredClasses}
-          keyExtractor={(item) => item.code}
-          renderItem={({ item }) => (
-            <View style={[styles.classItem, { backgroundColor: darkMode ? "#1E1E1E" : "#f9f9f9", borderColor: darkMode ? "#555" : "#004d2b" }]}>
-              <Text style={[styles.classText, { color: darkMode ? "#ffffff" : "#004d2b" }]}>{item.title} ({item.code})</Text>
-            </View>
-          )}
-        />
-      </View>
 
-      <BottomNavBar />
-    </SafeAreaView>
+        {/* Centered Subtitle */}
+        <Text style={[styles.subheading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>
+          It’s time to add your classes!
+        </Text>
+
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <TextInput
+            style={[styles.input, { backgroundColor: darkMode ? "#333" : "#fff", color: darkMode ? "#ffffff" : "#000000", borderColor: darkMode ? "#888" : "#007b5e" }]}
+            placeholder="Enter Class Code"
+            placeholderTextColor={darkMode ? "#aaaaaa" : "#555"}
+            value={classCode}
+            onChangeText={setClassCode}
+          />
+    
+          <View style={styles.checkboxContainer}>
+            <Switch
+              value={isChecked}
+              onValueChange={setIsChecked}
+              trackColor={{ false: "#ccc", true: "#007b5e" }}
+              thumbColor={isChecked ? "#ffffff" : "#666"}
+            />
+            <Text style={[styles.checkboxText, { color: darkMode ? "#aaaaaa" : "#007b5e" }]}>
+              By submitting, you consent to sharing your class enrollment status with students in your same class.
+            </Text>
+          </View>
+    
+          <TouchableOpacity
+            style={[styles.enterButton, { backgroundColor: isChecked ? "#007b5e" : "#aaa" }]}
+            onPress={handleAddClass}
+            disabled={!isChecked}
+          >
+            <Text style={styles.enterButtonText}>Submit</Text>
+          </TouchableOpacity>
+    
+          <FlatList
+            style={{ marginTop: 16, width: "100%" }}
+            data={registeredClasses}
+            keyExtractor={(item) => item.code}
+            renderItem={({ item }) => (
+              <View style={[styles.classItem, { backgroundColor: darkMode ? "#1E1E1E" : "#f9f9f9", borderColor: darkMode ? "#555" : "#004d2b" }]}>
+                <Text style={[styles.classText, { color: darkMode ? "#ffffff" : "#004d2b" }]}>{item.title} ({item.code})</Text>
+              </View>
+            )}
+          />
+        </View>
+
+        <BottomNavBar />
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -220,3 +226,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+

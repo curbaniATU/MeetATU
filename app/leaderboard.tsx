@@ -71,6 +71,8 @@ const Leaderboard: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+
       <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient 
           colors={darkMode ? ["#111111", "#555555"] : ["#24786D", "#3EA325"]}

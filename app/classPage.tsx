@@ -87,62 +87,68 @@ const ClassesScreen = () => {
   }, [userClasses]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+    <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
       
-      {/* Header with Back Button & '+' Add Class Button */}
-      <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-          <Ionicons name="arrow-back" size={28} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Your Classes</Text>
-        <TouchableOpacity onPress={() => router.push("/crn")} style={styles.iconButton}>
-          <Ionicons name="add-circle-outline" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
+      {/* ✅ Matches Header Background Above Header */}
+      <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
 
-      {classes.length > 0 ? (
-        <FlatList
-          data={classes}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View
-              style={[
-                styles.classContainer,
-                { backgroundColor: darkMode ? "#1E1E1E" : "#ffffff" },
-              ]}
-            >
-              <Text style={[styles.classTitle, { color: darkMode ? "#80cbc4" : "#007bff" }]}>
-                {item.title} ({item.code})
-              </Text>
-              <Text style={[styles.instructor, { color: darkMode ? "#cccccc" : "#333" }]}>
-                Instructor: {item.Instructor}
-              </Text>
-              <Text style={[styles.instructor, { color: darkMode ? "#cccccc" : "#333" }]}>
-                Students Enrolled:
-              </Text>
+      <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+        
+        {/* Header with Back Button & '+' Add Class Button */}
+        <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+            <Ionicons name="arrow-back" size={28} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Your Classes</Text>
+          <TouchableOpacity onPress={() => router.push("/crn")} style={styles.iconButton}>
+            <Ionicons name="add-circle-outline" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
 
-              {item.students.length > 0 ? (
-                item.students.map((student, index) => (
-                  <Text key={index} style={[styles.studentName, { color: darkMode ? "#aaaaaa" : "#555" }]}>
-                    {student}
-                  </Text>
-                ))
-              ) : (
-                <Text style={[styles.noStudents, { color: darkMode ? "#888" : "#888" }]}>
-                  No students enrolled.
+        {classes.length > 0 ? (
+          <FlatList
+            data={classes}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View
+                style={[
+                  styles.classContainer,
+                  { backgroundColor: darkMode ? "#1E1E1E" : "#ffffff" },
+                ]}
+              >
+                <Text style={[styles.classTitle, { color: darkMode ? "#80cbc4" : "#007bff" }]}>
+                  {item.title} ({item.code})
                 </Text>
-              )}
-            </View>
-          )}
-        />
-      ) : (
-        <Text style={[styles.noClasses, { color: darkMode ? "#aaaaaa" : "#888" }]}>
-          You are not enrolled in any classes.
-        </Text>
-      )}
+                <Text style={[styles.instructor, { color: darkMode ? "#cccccc" : "#333" }]}>
+                  Instructor: {item.Instructor}
+                </Text>
+                <Text style={[styles.instructor, { color: darkMode ? "#cccccc" : "#333" }]}>
+                  Students Enrolled:
+                </Text>
 
-      <BottomNavBar />
-    </SafeAreaView>
+                {item.students.length > 0 ? (
+                  item.students.map((student, index) => (
+                    <Text key={index} style={[styles.studentName, { color: darkMode ? "#aaaaaa" : "#555" }]}>
+                      {student}
+                    </Text>
+                  ))
+                ) : (
+                  <Text style={[styles.noStudents, { color: darkMode ? "#888" : "#888" }]}>
+                    No students enrolled.
+                  </Text>
+                )}
+              </View>
+            )}
+          />
+        ) : (
+          <Text style={[styles.noClasses, { color: darkMode ? "#aaaaaa" : "#888" }]}>
+            You are not enrolled in any classes.
+          </Text>
+        )}
+
+        <BottomNavBar />
+      </SafeAreaView>
+    </View>
   );
 };
 

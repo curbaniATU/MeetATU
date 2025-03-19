@@ -1,18 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    Switch,
-    StyleSheet,
-    Alert,
-    View,
-    Image,
-    Modal,
-    FlatList,
-    ActivityIndicator
-} from "react-native";
+import {SafeAreaView, Text, TouchableOpacity, Switch, StyleSheet, Alert, View, Image, Modal, FlatList, ActivityIndicator} from "react-native";
 import { auth, db } from "../comp/firebase";
 import { signOut } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";

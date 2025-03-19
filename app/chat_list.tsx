@@ -5,7 +5,7 @@ import { useChatStore } from "@/comp/chatStore";
 import { useRouter } from "expo-router";
 import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomNavBar from "../comp/BottomNavForMessages";
 import { Ionicons } from "@expo/vector-icons";
@@ -110,14 +110,17 @@ export default function ChatList() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#ffffff" }]}>
-            {/* Header with Messages Title, Trash & Create Buttons */}
+        <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#ffffff" }}>
+            {/* ✅ Replaced SafeAreaView with a simple View for header background */}
+            <View style={{ height: 44, backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+
+            {/* ✅ Header with Correct Height & Centered Text */}
             <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
                 <TouchableOpacity onPress={toggleSelectionMode} style={styles.iconButton}>
                     <Ionicons name="trash-outline" size={28} color="white" />
                 </TouchableOpacity>
 
-                <Text style={[styles.headerText, { color: darkMode ? "#ffffff" : "#ffffff" }]}>
+                <Text style={[styles.headerText, { color: "white" }]}>
                     {selectionMode ? `${selectedChats.length} Selected` : "Messages"}
                 </Text>
 
@@ -134,57 +137,56 @@ export default function ChatList() {
                 )}
             </View>
 
-            {/* Chat List */}
-            {chats.map((chat) => (
-                <TouchableOpacity
-                    style={[
-                        styles.chatItem,
-                        { backgroundColor: darkMode ? "#1E1E1E" : "white", borderColor: darkMode ? "#444" : "#24786D" },
-                        selectedChats.includes(chat.chatId) && styles.selectedChat,
-                    ]}
-                    key={chat.chatId}
-                    onPress={() => {
-                        if (selectionMode) {
-                            toggleChatSelection(chat.chatId);
-                        } else {
-                            fetchChatInfo(chat.chatId, chat.user);
-                            router.push("/chat");
-                        }
-                    }}
-                >
-                    <View>
-                        {avatar[chat.user.id] ? (
-                            <Image source={avatar[chat.user.id]} style={styles.avatar} />
-                        ) : (
-                            <Text style={{ color: darkMode ? "#ffffff" : "#000000" }}>Loading...</Text>
+            {/* ✅ Chat List without Extra Space */}
+            <FlatList
+                data={chats}
+                keyExtractor={(item) => item.chatId}
+                contentContainerStyle={{ paddingTop: 0 }} // ✅ Fixes extra space above first chat
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        style={[
+                            styles.chatItem,
+                            { backgroundColor: darkMode ? "#1E1E1E" : "white", borderColor: darkMode ? "#444" : "#24786D" },
+                            selectedChats.includes(item.chatId) && styles.selectedChat,
+                        ]}
+                        onPress={() => {
+                            if (selectionMode) {
+                                toggleChatSelection(item.chatId);
+                            } else {
+                                fetchChatInfo(item.chatId, item.user);
+                                router.push("/chat");
+                            }
+                        }}
+                    >
+                        <Image source={avatar[item.user.id]} style={styles.avatar} />
+                        <View style={styles.chatText}>
+                            <Text style={[styles.chatUser, { color: darkMode ? "#ffffff" : "#000000" }]}>{item.user.username}</Text>
+                            <Text style={[styles.lastMessage, { color: darkMode ? "#aaaaaa" : "#949494" }]}>{item.lastMessage}</Text>
+                        </View>
+                        {selectionMode && (
+                            <Ionicons
+                                name={selectedChats.includes(item.chatId) ? "checkmark-circle" : "ellipse-outline"}
+                                size={28}
+                                color={selectedChats.includes(item.chatId) ? "#4CAF50" : "#aaa"}
+                            />
                         )}
-                    </View>
-                    <View style={styles.chatText}>
-                        <Text style={[styles.chatUser, { color: darkMode ? "#ffffff" : "#000000" }]}>{chat.user.username}</Text>
-                        <Text style={[styles.lastMessage, { color: darkMode ? "#aaaaaa" : "#949494" }]}>{chat.lastMessage}</Text>
-                    </View>
-                    {selectionMode && (
-                        <Ionicons
-                            name={selectedChats.includes(chat.chatId) ? "checkmark-circle" : "ellipse-outline"}
-                            size={28}
-                            color={selectedChats.includes(chat.chatId) ? "#4CAF50" : "#aaa"}
-                        />
-                    )}
-                </TouchableOpacity>
-            ))}
+                    </TouchableOpacity>
+                )}
+            />
 
             <BottomNavBar />
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
     header: {
-        padding: 15,
+        height: 60,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        paddingHorizontal: 15,
     },
     iconButton: { padding: 10 },
     headerText: {
@@ -198,16 +200,15 @@ const styles = StyleSheet.create({
         padding: 10,
         flexDirection: "row",
         alignItems: "center",
-        borderColor: "#24786D",
     },
+    chatUser: { fontSize: 18, fontWeight: "bold" },
+    avatar: { width: 50, height: 50, borderRadius: 25 },
+    lastMessage: { color: "#949494" },
+    selectedChat: { backgroundColor: "#ddd" },
     chatText: {
         flexDirection: "column",
         marginLeft: 10,
     },
-    lastMessage: {
-        color: "#949494",
-    },
-    selectedChat: { backgroundColor: "#ddd" },
-    chatUser: { fontSize: 18, fontWeight: "bold" },
-    avatar: { width: 50, height: 50, borderRadius: 25 },
 });
+
+//export default ChatList;

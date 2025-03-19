@@ -10,8 +10,8 @@ import {
     Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { collection, addDoc, onSnapshot, updateDoc, setDoc, serverTimestamp, doc, arrayUnion, getDoc } from "firebase/firestore";
-import { db, auth } from "@/comp/firebase";
+import { collection, onSnapshot, updateDoc, setDoc, serverTimestamp, doc, arrayUnion, getDoc } from "firebase/firestore";
+import { db } from "@/comp/firebase";
 import { useUserStore } from "@/comp/userStore";
 import { useChatStore } from "@/comp/chatStore";
 import useThemeStore from "@/comp/themeStore";
@@ -112,13 +112,23 @@ const CreateChat = () => {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#E3E4E4" }]}>
-            {/* Header with Title and Back Button */}
+        <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#E3E4E4" }}>
+            {/* ✅ Matches Header Background Above Header */}
+            <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+
+            {/* ✅ Properly Sized Header with Centered Title */}
             <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
                     <Ionicons name="arrow-back" size={28} color="white" />
                 </TouchableOpacity>
-                <Text style={[styles.headerText, { color: "white" }]}>Start a New Chat</Text>
+                
+                {/* Centered title */}
+                <View style={styles.headerTitleContainer}>
+                    <Text style={[styles.headerText, { color: "white" }]}>Start a New Chat</Text>
+                </View>
+
+                {/* Invisible Text to Balance Header */}
+                <Text style={{ color: "transparent", width: 40 }}>⠀</Text>
             </View>
 
             {/* Search Input */}
@@ -152,7 +162,7 @@ const CreateChat = () => {
                     )}
                 />
             )}
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -166,8 +176,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         backgroundColor: "#24786D", // Green header background
+    },
+    headerTitleContainer: {
+        flex: 1,
+        alignItems: "center", // Ensures text is centered within header
     },
     iconButton: {
         padding: 10,
@@ -175,8 +189,6 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 20,
         fontWeight: "bold",
-        textAlign: "center",
-        flex: 1, // Center the title properly
     },
     input: { 
         padding: 10, 

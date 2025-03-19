@@ -105,43 +105,49 @@ const Events = () => {
   // **Main Event List View**
   if (!creatingEvent) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+      <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
+        
+        {/* ✅ Matches Header Background Above Header */}
+        <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
 
-        {/* Header with Back Button & '+' Create Event Button */}
-        <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
-            <Ionicons name="arrow-back" size={28} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.headerText}>Your Study Groups</Text>
-          <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
-            <Ionicons name="add-circle-outline" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
+        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
 
-        {loading ? (
-          <Text style={styles.loadingText}>Loading events...</Text>
-        ) : events.length > 0 ? (
-          <FlatList
-            data={events}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.eventContainer}>
-                <View style={styles.eventContent}>
-                  <Text style={styles.eventTitle}>{item.name}</Text>
-                  <Text style={styles.eventDescription}>{item.description}</Text>
+          {/* Header with Back Button & '+' Create Event Button */}
+          <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
+              <Ionicons name="arrow-back" size={28} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Your Study Groups</Text>
+            <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
+              <Ionicons name="add-circle-outline" size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          {loading ? (
+            <Text style={styles.loadingText}>Loading events...</Text>
+          ) : events.length > 0 ? (
+            <FlatList
+              data={events}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View style={styles.eventContainer}>
+                  <View style={styles.eventContent}>
+                    <Text style={styles.eventTitle}>{item.name}</Text>
+                    <Text style={styles.eventDescription}>{item.description}</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => confirmLeaveEvent(item.id)} style={styles.leaveButton}>
+                    <Ionicons name="exit-outline" size={28} color="#d9534f" />
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => confirmLeaveEvent(item.id)} style={styles.leaveButton}>
-                  <Ionicons name="exit-outline" size={28} color="#d9534f" />
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-        ) : (
-          <Text style={styles.noEventsText}>No events joined yet.</Text>
-        )}
+              )}
+            />
+          ) : (
+            <Text style={styles.noEventsText}>No events joined yet.</Text>
+          )}
 
-        <BottomNavBar />
-      </SafeAreaView>
+          <BottomNavBar />
+        </SafeAreaView>
+      </View>
     );
   }
 
@@ -149,40 +155,53 @@ const Events = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+        <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
 
-          {/* Header */}
-          <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
-            <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
-              <Ionicons name="arrow-back" size={28} color="white" />
+          {/* ✅ Matches Header Background Above Header */}
+          <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+
+          <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
+
+            {/* Header */}
+            <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+  <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
+    <Ionicons name="arrow-back" size={28} color="white" />
+  </TouchableOpacity>
+
+  {/* Use a View container to center the text */}
+  <View style={styles.headerTitleContainer}>
+    <Text style={styles.headerText}>Create Study Group</Text>
+  </View>
+
+  {/* Invisible text for proper centering balance */}
+  <Text style={{ color: "transparent", width: 40 }}>⠀</Text>
+</View>
+
+            {/* Inputs */}
+            <View style={styles.formContainer}>
+              <TextInput 
+                style={styles.input} 
+                placeholder="Event Name" 
+                placeholderTextColor="#aaa"
+                value={eventName} 
+                onChangeText={setEventName} 
+              />
+              <TextInput 
+                style={[styles.input, styles.textArea]} 
+                placeholder="Event Description" 
+                placeholderTextColor="#aaa"
+                value={eventDescription} 
+                onChangeText={setEventDescription} 
+                multiline 
+              />
+            </View>
+
+            <TouchableOpacity style={styles.createButton} onPress={createEvent}>
+              <Text style={styles.createButtonText}>Create Event</Text>
             </TouchableOpacity>
-            <Text style={styles.headerText}>Create Study Group</Text>
-          </View>
 
-          {/* Inputs */}
-          <View style={styles.formContainer}>
-            <TextInput 
-              style={styles.input} 
-              placeholder="Event Name" 
-              placeholderTextColor="#aaa"
-              value={eventName} 
-              onChangeText={setEventName} 
-            />
-            <TextInput 
-              style={[styles.input, styles.textArea]} 
-              placeholder="Event Description" 
-              placeholderTextColor="#aaa"
-              value={eventDescription} 
-              onChangeText={setEventDescription} 
-              multiline 
-            />
-          </View>
-
-          <TouchableOpacity style={styles.createButton} onPress={createEvent}>
-            <Text style={styles.createButtonText}>Create Event</Text>
-          </TouchableOpacity>
-
-        </SafeAreaView>
+          </SafeAreaView>
+        </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
@@ -201,6 +220,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#24786D",
   },
+  headerTitleContainer: {
+    alignItems: "center",
+    marginTop: 15,
+  },  
   iconButton: { padding: 10 },
   headerText: {
     fontSize: 20,

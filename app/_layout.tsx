@@ -1,81 +1,3 @@
-/*import { Stack, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { auth } from "../config/firebase";
-import { User } from "firebase/auth";
-
-export default function RootLayout() {
-  //? This code is to allow for persistence, does not currently work on mobile.
-  // const [user, setUser]=useState<User | null>(null);
-  // const router = useRouter();
-  // useEffect(() =>{
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     setUser(user);
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (user) {
-  //     router.push("/profile")
-  //   }
-  // })
-
-  return (
-    <Stack>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="signup" />
-      <Stack.Screen name="profile_creation" />
-      <Stack.Screen name="profile" />
-      <Stack.Screen name="home" />
-    </Stack>
-  );
-}  
-  
-this is the OG
-*/
-
-
-/*import { Stack } from "expo-router";
-import React from "react";
-
-export default function RootLayout() {
-  return (
-    <Stack>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="signup" />
-      <Stack.Screen name="profile_creation" />
-      <Stack.Screen name="profile" />
-      <Stack.Screen name="home" />
-    </Stack>
-  );
-}
-  */
-
-/*
-import { Stack } from "expo-router";
-import React from "react";
-
-export default function RootLayout() {
-  return (
-    <Stack
-      screenOptions={{
-        headerShown: false, // Hides the header globally across the app
-      }}
-    >
-      <Stack.Screen name="index" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="signup" />
-      <Stack.Screen name="profile_creation" />
-      <Stack.Screen name="profile" />
-      <Stack.Screen name="home" />
-    </Stack>
-  );
-}
-*/
-
 import { auth } from "@/comp/firebase";
 import { useUserStore } from "@/comp/userStore";
 import { router, Stack, useRootNavigationState } from "expo-router";
@@ -144,6 +66,7 @@ export default function RootLayout() {
         <Stack.Screen name="crn" options={{ title: "Add Classes", headerShown: false }} />
         <Stack.Screen name="classPage" options={{ title: "Classes", headerShown: false }} />
         <Stack.Screen name="createChat" options={{ title: "Create a Chat", headerShown: false }} />
+        <Stack.Screen name="report" options={{ title: "Reporting", headerShown: false }} />
       </Stack>
     </View>
   );

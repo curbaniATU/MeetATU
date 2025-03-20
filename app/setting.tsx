@@ -1,6 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {SafeAreaView, Text, TouchableOpacity, Switch, StyleSheet, Alert, View, Image, Modal, FlatList, ActivityIndicator} from "react-native";
+import {
+  SafeAreaView, Text, TouchableOpacity, Switch, StyleSheet, Alert, View, Image, Modal, FlatList, ActivityIndicator, StatusBar
+} from "react-native";
 import { auth, db } from "../comp/firebase";
 import { signOut } from "firebase/auth";
 import { updateDoc, doc } from "firebase/firestore";
@@ -41,8 +43,6 @@ export default function SettingsScreen() {
         }
     }, [currentUser]);
 
-    const toggleNotifications = () => setNotificationsEnabled(prev => !prev);
-
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -74,8 +74,9 @@ export default function SettingsScreen() {
 
     return (
         <View style={{ flex: 1, backgroundColor: darkMode ? '#121212' : '#f5f5f5' }}>
-            {/* ✅ SafeAreaView for Dynamic Island / Notch */}
+            {/* ✅ Fix SafeAreaView and StatusBar */}
             <SafeAreaView style={{ backgroundColor: "#24786D" }} />
+            <StatusBar barStyle="light-content" backgroundColor="#24786D" />
             
             {/* ✅ Fixed Header */}
             <View style={styles.header}>
@@ -83,7 +84,6 @@ export default function SettingsScreen() {
                     <Ionicons name="arrow-back" size={28} color="white" />
                 </TouchableOpacity>
 
-                {/* ✅ Title should be inside a separate `View` */}
                 <View style={styles.headerTitleContainer}>
                     <Text style={styles.headerText}>Settings</Text>
                 </View>
@@ -100,6 +100,7 @@ export default function SettingsScreen() {
                 <Modal visible={modalVisible} transparent animationType="slide">
                     <View style={styles.modalContainer}>
                         <FlatList
+                            contentContainerStyle={styles.modalContent}
                             data={avatarOptions}
                             numColumns={3}
                             keyExtractor={(item) => item.filename}
@@ -119,9 +120,9 @@ export default function SettingsScreen() {
                     <Switch value={darkMode} onValueChange={setDarkMode} />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.settingItem} onPress={toggleNotifications}>
+                <TouchableOpacity style={styles.settingItem} onPress={() => setNotificationsEnabled(prev => !prev)}>
                     <Text style={[styles.settingText, darkMode && styles.darkText]}>Enable Notifications</Text>
-                    <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
+                    <Switch value={notificationsEnabled} onValueChange={setNotificationsEnabled} />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.settingItem} onPress={() => router.push("/crn")}> 
@@ -165,10 +166,20 @@ const styles = StyleSheet.create({
     container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20 },
     settingItem: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#ccc' },
     settingText: { color: '#007b5e', fontSize: 18 },
-    logoutButton: { marginTop: 20, backgroundColor: '#f54242', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, marginBottom: 200, alignItems: 'center', marginHorizontal: 5 },
+    logoutButton: { marginTop: 20, backgroundColor: '#f54242', paddingVertical: 12, paddingHorizontal: 20, borderRadius: 20, marginBottom: 200, alignItems: 'center' },
     profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 10 },
     avatarContainer: { alignItems: 'center', marginBottom: 20 },
-    modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+    modalContainer: { 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: 'rgba(0,0,0,0.9)' 
+    },
+    modalContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexGrow: 1
+    },
     avatarOption: { width: 80, height: 80, margin: 10, borderRadius: 40, borderWidth: 2, borderColor: '#fff' },
     buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
     darkText: { color: '#fff' },

@@ -71,7 +71,7 @@ const Leaderboard: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+      <SafeAreaView style={{ backgroundColor: darkMode ? "#24786D" : "#24786D" }} />
 
       <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient 
@@ -106,24 +106,22 @@ const Leaderboard: React.FC = () => {
   
           {/* Scrollable "How to Earn Points" Section */}
           <ScrollView 
-            style={{ flex: 1, marginHorizontal: 10, margin:10}}
+            style={{ flex: 1, marginHorizontal: 10,  margin: 10}}
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={true}
           >
-            <View style={{ backgroundColor: "white", borderRadius: 10, padding: 13 }}>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Message someone in a class: 5 points</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Message 5 people in a class: 20 points</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Make a study chat: 10 points</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Attend a study group: 20 points</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Join a study event: 15 points</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Participate in a group chat: 5 points per message</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Reply to a message: 3 points per reply</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Create a profile: 20 points automatically</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Send a friend request: 5 points per request</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Accept a friend request: 5 points per accepted request</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Log in daily: 5 points per consecutive day</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Leaderboard climb: 20 points for reaching a new rank</Text>
-              <Text style={[styles.chartText, { color: "#333" }]}>- Fill out major, bio, classification: 5 points</Text>
+            <View style={{ backgroundColor: "white", borderRadius: 10, padding: 13, paddingVertical: 20 }}>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Message someone in a class: 5 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Message 5 people in a class: 25 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Make a study chat: 10 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Attend a study group: 20 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Join a study event: 15 points</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Participate in a group chat: 5 points per message</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Create a profile: 20 points automatically</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Send a friend request: 5 points per request</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Accept a friend request: 5 points per request</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Log in daily: 5 points per consecutive day</Text>
+              <Text style={[styles.chartText, { color: "#333" }]}>• Leaderboard climb: 20 points per new rank</Text>
             </View>
           </ScrollView>
         </LinearGradient>
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingVertical: 15,
+    paddingVertical: 8,
     paddingHorizontal: 15,
     backgroundColor: "#24786D",
   },
@@ -161,7 +159,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8, 
+    marginTop: 10, 
     margin: 10,
   },
   playerText: {
@@ -185,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   chartHeader: {
     fontSize: 18,
@@ -195,7 +193,7 @@ const styles = StyleSheet.create({
     color:'white'
   },
   chartText: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#333',
     marginBottom: 5,
   },

@@ -5,6 +5,7 @@ import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { Ionicons } from '@expo/vector-icons';
 import BottomNavBar from '../comp/BottomNavForProfile';
 import useThemeStore from "@/comp/themeStore"; 
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   View,
@@ -158,16 +159,9 @@ export default function Profile() {
   }
 
   return (
-    
     <View style={{ flex: 1, justifyContent: 'space-between' }}>
-      
+    <SafeAreaView style={{ backgroundColor: "#24786D" }} />  
       <View style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
-
-      {/* Settings Button (Fixed Top Right) 
-      <TouchableOpacity style={styles.settingsButton} onPress={() => router.push("/setting")}>
-        <Ionicons name="settings-outline" size={30} color="#24786D" />
-      </TouchableOpacity>*/}
-
       {/* Header with name at the top */}
       <View style={styles.header}>
       <Text style={[styles.nameText, { color: darkMode ? "#ffffff" : "#333" }]}>{`${userDetails.firstName || "First Name"} ${userDetails.lastName || "Last Name"}`}</Text>

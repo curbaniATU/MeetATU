@@ -74,7 +74,7 @@ export default function Chat() {
     return (
         <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#ffffff" }}>
             {/* ✅ Keeps Green Background at the Very Top */}
-            <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+            <SafeAreaView style={{ backgroundColor: "#24786D" }} />
             
             <SafeAreaView style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#ffffff" }} edges={["left", "right", "bottom"]}>
                 {/* Ensures input shifts up when keyboard is open */}

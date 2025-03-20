@@ -106,14 +106,14 @@ const Events = () => {
   if (!creatingEvent) {
     return (
       <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
-        
+      <SafeAreaView style={{ backgroundColor: "#24786D" }} />  
         {/* ✅ Matches Header Background Above Header */}
         <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
 
         <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
 
           {/* Header with Back Button & '+' Create Event Button */}
-          <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+          <View style={[styles.header, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}>
             <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
               <Ionicons name="arrow-back" size={28} color="white" />
             </TouchableOpacity>
@@ -156,14 +156,12 @@ const Events = () => {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
-
-          {/* ✅ Matches Header Background Above Header */}
-          <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+          <SafeAreaView style={{ backgroundColor: darkMode ? "#24786D" : "#24786D" }} />
 
           <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
 
             {/* Header */}
-            <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+            <View style={[styles.header, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}>
   <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
     <Ionicons name="arrow-back" size={28} color="white" />
   </TouchableOpacity>

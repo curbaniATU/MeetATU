@@ -113,11 +113,9 @@ const CreateChat = () => {
 
     return (
         <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#E3E4E4" }}>
-            {/* ✅ Matches Header Background Above Header */}
-            <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
-
+        <SafeAreaView style={{ backgroundColor: "#24786D" }} />
             {/* ✅ Properly Sized Header with Centered Title */}
-            <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+            <View style={[styles.header, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}>
                 <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
                     <Ionicons name="arrow-back" size={28} color="white" />
                 </TouchableOpacity>

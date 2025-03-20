@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, ActivityIndicator } from "react-native";
+import { Alert, ActivityIndicator, StatusBar } from "react-native";
 import {
   SafeAreaView, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, View, Switch
 } from "react-native";
@@ -81,15 +81,16 @@ export default function RegisterClassesPage() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f3f3f3" }}>
+    <>
+      {/* ✅ Fixes the status bar and safe area issue */}
+      <SafeAreaView style={{ backgroundColor: darkMode ? "#24786D" : "#24786D" }} />
+      <StatusBar barStyle="light-content" backgroundColor="#24786D" />
 
-      {/* ✅ Matches Header Background Above Header */}
-      <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
+      {/* ✅ Wraps everything inside a correctly formatted SafeAreaView */}
+      <SafeAreaView style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f3f3f3" }}>
 
-      <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f3f3f3" }]}>
-        
-        {/* Header with Back Button */}
-        <View style={[styles.header, { backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }]}>
+        {/* ✅ Correctly styled header */}
+        <View style={[styles.header, { backgroundColor: "#24786D" }]}>
           <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
             <Ionicons name="arrow-back" size={28} color="white" />
           </TouchableOpacity>
@@ -97,7 +98,7 @@ export default function RegisterClassesPage() {
           <View style={styles.iconButton} />
         </View>
 
-        {/* Centered Subtitle */}
+        {/* ✅ Subtitle */}
         <Text style={[styles.subheading, { color: darkMode ? "#ffffff" : "#004d2b" }]}>
           It’s time to add your classes!
         </Text>
@@ -145,16 +146,11 @@ export default function RegisterClassesPage() {
 
         <BottomNavBar />
       </SafeAreaView>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "space-between",
-    padding: 16,
-  },
   header: {
     height: 60,
     flexDirection: "row",
@@ -226,4 +222,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-

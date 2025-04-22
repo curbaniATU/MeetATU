@@ -10,7 +10,6 @@ import BottomNavBar from '../comp/BottomNavBarForEvents';
 import useThemeStore from "@/comp/themeStore"; 
 import { Ionicons } from "@expo/vector-icons";
 
-// **Define Event and User Types**
 interface Event {
   id: string;
   name: string;
@@ -31,7 +30,11 @@ const Events = () => {
   const [eventName, setEventName] = useState('');
   const [eventDescription, setEventDescription] = useState('');
 
-  // **Fetch User's Joined Events**
+  const [searchQuery, setSearchQuery] = useState('');
+  const [users, setUsers] = useState<{ id: string; name: string; email: string }[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [invitedUsers, setInvitedUsers] = useState<{ id: string; name: string; email: string }[]>([]);
+
   useEffect(() => {
     if (!currentUser) return;
 
@@ -47,13 +50,53 @@ const Events = () => {
     return () => unsubscribe();
   }, [currentUser]);
 
-  // **Confirm Leaving Event**
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setUsers([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
+      const filteredUsers = snapshot.docs
+        .map((doc) => {
+          const userData = doc.data();
+          return {
+            id: doc.id,
+            name: userData.username || userData.firstName || userData.lastName || "Unknown User",
+            email: userData.email || "",
+          };
+        })
+        .filter(user => user.name && user.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      setUsers(filteredUsers);
+      setShowDropdown(filteredUsers.length > 0);
+    });
+
+    return () => unsubscribe();
+  }, [searchQuery]);
+
+  const inviteUser = (user: { id: string; name: string; email: string }) => {
+    if (invitedUsers.some(invited => invited.id === user.id)) {
+      Alert.alert('User already invited');
+      return;
+    }
+    if (invitedUsers.length >= 10) {
+      Alert.alert('Invite Limit Reached', 'You can invite up to 10 users only.');
+      return;
+    }
+
+    setInvitedUsers([...invitedUsers, user]);
+    setSearchQuery('');
+    setUsers([]);
+    setShowDropdown(false);
+  };
+
   const confirmLeaveEvent = (eventId: string) => {
     setSelectedEvent(eventId);
     setLeaveModalVisible(true);
   };
 
-  // **Leave an Event**
   const leaveEvent = async () => {
     if (!selectedEvent) return;
 
@@ -69,10 +112,8 @@ const Events = () => {
     }
   };
 
-  // **Toggle Between Event List and Event Creation View**
   const toggleView = () => setCreatingEvent(!creatingEvent);
 
-  // **Create Event**
   const createEvent = async () => {
     if (!eventName.trim()) {
       Alert.alert('Error', 'Please enter an event name.');
@@ -88,7 +129,7 @@ const Events = () => {
       await addDoc(collection(db, 'events'), {
         name: eventName,
         description: eventDescription || "No description provided.",
-        invitedUsers: [currentUser], 
+        invitedUsers: [currentUser],
         createdAt: new Date(),
       });
 
@@ -102,17 +143,13 @@ const Events = () => {
     }
   };
 
-  // **Main Event List View**
   if (!creatingEvent) {
     return (
       <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
-      <SafeAreaView style={{ backgroundColor: "#24786D" }} />  
-        {/* ✅ Matches Header Background Above Header */}
+        <SafeAreaView style={{ backgroundColor: "#24786D" }} />
         <SafeAreaView style={{ backgroundColor: darkMode ? "#1E1E1E" : "#24786D" }} />
 
         <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
-
-          {/* Header with Back Button & '+' Create Event Button */}
           <View style={[styles.header, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}>
             <TouchableOpacity onPress={() => router.back()} style={styles.iconButton}>
               <Ionicons name="arrow-back" size={28} color="white" />
@@ -151,31 +188,23 @@ const Events = () => {
     );
   }
 
-  // **Event Creation View**
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1, backgroundColor: darkMode ? "#121212" : "#f5f5f5" }}>
           <SafeAreaView style={{ backgroundColor: darkMode ? "#24786D" : "#24786D" }} />
-
           <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? "#121212" : "#f5f5f5" }]}>
 
-            {/* Header */}
             <View style={[styles.header, { backgroundColor: darkMode ? "#24786D" : "#24786D" }]}>
-  <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
-    <Ionicons name="arrow-back" size={28} color="white" />
-  </TouchableOpacity>
+              <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
+                <Ionicons name="arrow-back" size={28} color="white" />
+              </TouchableOpacity>
+              <View style={styles.headerTitleContainer}>
+                <Text style={styles.headerText}>Create Study Group</Text>
+              </View>
+              <Text style={{ color: "transparent", width: 40 }}>⠀</Text>
+            </View>
 
-  {/* Use a View container to center the text */}
-  <View style={styles.headerTitleContainer}>
-    <Text style={styles.headerText}>Create Study Group</Text>
-  </View>
-
-  {/* Invisible text for proper centering balance */}
-  <Text style={{ color: "transparent", width: 40 }}>⠀</Text>
-</View>
-
-            {/* Inputs */}
             <View style={styles.formContainer}>
               <TextInput 
                 style={styles.input} 
@@ -192,6 +221,34 @@ const Events = () => {
                 onChangeText={setEventDescription} 
                 multiline 
               />
+
+              <TextInput 
+                style={styles.input}
+                placeholder="Search users to invite"
+                placeholderTextColor="#aaa"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {showDropdown && (
+                <View style={styles.dropdown}>
+                  {users.map((user) => (
+                    <TouchableOpacity
+                      key={user.id}
+                      style={styles.dropdownItem}
+                      onPress={() => inviteUser(user)}
+                    >
+                      <Text>{user.name} ({user.email})</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+              <View style={{ marginTop: 10 }}>
+                {invitedUsers.map((user) => (
+                  <Text key={user.id} style={{ marginBottom: 5 }}>
+                    Invited: {user.name}
+                  </Text>
+                ))}
+              </View>
             </View>
 
             <TouchableOpacity style={styles.createButton} onPress={createEvent}>
@@ -207,11 +264,10 @@ const Events = () => {
 
 export default Events;
 
-// **Styles**
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f5f5f5" },
   header: {
-    height: 60, // Increased height for better spacing
+    height: 60,
     paddingHorizontal: 15,
     flexDirection: "row",
     alignItems: "center",
@@ -232,7 +288,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 15,
-    marginTop: 5, // Added margin to move inputs down
+    marginTop: 5,
   },
   input: {  
     backgroundColor: "#fff",
@@ -276,4 +332,19 @@ const styles = StyleSheet.create({
   eventTitle: { fontSize: 18, fontWeight: "bold" },
   eventDescription: { fontSize: 16, marginTop: 5 },
   noEventsText: { textAlign: "center", fontSize: 18, color: "#aaa", marginTop: 20 },
+  dropdown: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginTop: -10,
+    marginBottom: 10,
+    zIndex: 999,
+  },
+  dropdownItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
 });
